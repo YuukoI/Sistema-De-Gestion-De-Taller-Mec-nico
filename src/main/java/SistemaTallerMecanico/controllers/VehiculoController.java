@@ -6,6 +6,7 @@ import SistemaTallerMecanico.services.VehiculoService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class VehiculoController {
     private final VehiculoService vehiculoService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<Vehiculo>> findAll() {
         List<Vehiculo> vehiculos = vehiculoService.getAllVehiculos();
         if(vehiculos.isEmpty()){
@@ -32,6 +34,7 @@ public class VehiculoController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Vehiculo> findById(@PathVariable Long id) {
         Vehiculo vehiculo = vehiculoService.getVehiculoById(id);
         if(vehiculo == null){
@@ -41,6 +44,7 @@ public class VehiculoController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
         Vehiculo vehiculo = vehiculoService.getVehiculoById(id);
         if(vehiculo == null){
@@ -52,6 +56,7 @@ public class VehiculoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> save(@Valid @RequestBody VehiculoDTO vehiculoDTO, BindingResult resultado){
         if (resultado.hasErrors()) {
             Map<String, String> errores = new HashMap<>();
@@ -69,6 +74,7 @@ public class VehiculoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> update(@Valid @RequestBody VehiculoDTO vehiculoDTO, BindingResult resultado, @PathVariable Long id) {
         if (resultado.hasErrors()) {
             Map<String, String> errores = new HashMap<>();

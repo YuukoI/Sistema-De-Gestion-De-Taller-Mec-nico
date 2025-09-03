@@ -6,6 +6,7 @@ import SistemaTallerMecanico.services.RepuestoService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class RepuestoController {
     private final RepuestoService repuestoService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<Repuesto>> findAll() {
         List<Repuesto> repuestos = repuestoService.findAll();
 
@@ -32,6 +34,7 @@ public class RepuestoController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Repuesto> findById(@PathVariable Long id) {
         Repuesto repuesto = repuestoService.findById(id);
         if(repuesto == null){
@@ -41,6 +44,7 @@ public class RepuestoController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Repuesto> deleteById(@PathVariable Long id) {
         Repuesto repuesto = repuestoService.findById(id);
         if(repuesto == null){
@@ -51,6 +55,7 @@ public class RepuestoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> save(@Valid @RequestBody RepuestoDTO repuestoDTO, BindingResult resultado) {
         if (resultado.hasErrors()) {
             Map<String, String> errores = new HashMap<>();
@@ -70,6 +75,7 @@ public class RepuestoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody RepuestoDTO repuestoDTO, BindingResult resultado) {
         if (resultado.hasErrors()) {
             Map<String, String> errores = new HashMap<>();

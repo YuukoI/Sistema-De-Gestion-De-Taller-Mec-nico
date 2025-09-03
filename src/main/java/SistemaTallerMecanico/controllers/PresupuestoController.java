@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class PresupuestoController {
     private final PresupuestoService presupuestoService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<Presupuesto>> findAll(){
         List<Presupuesto> presupuestos = presupuestoService.findAll();
         if(presupuestos.isEmpty()){
@@ -32,6 +34,7 @@ public class PresupuestoController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Presupuesto> findById(@PathVariable Long id){
         Presupuesto presupuesto = presupuestoService.findById(id);
         if(presupuesto == null){
@@ -41,6 +44,7 @@ public class PresupuestoController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Presupuesto> deleteById(@PathVariable Long id){
         Presupuesto presupuesto = presupuestoService.findById(id);
         if(presupuesto == null){
@@ -51,6 +55,7 @@ public class PresupuestoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> save(@Valid @RequestBody PresupuestoDTO presupuestoDTO, BindingResult resultado){
         if (resultado.hasErrors()) {
             Map<String, String> errores = new HashMap<>();
@@ -72,6 +77,7 @@ public class PresupuestoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> update(@Valid @RequestBody PresupuestoDTO presupuestoDTO, @PathVariable Long id, BindingResult resultado){
         if (resultado.hasErrors()) {
             Map<String, String> errores = new HashMap<>();
