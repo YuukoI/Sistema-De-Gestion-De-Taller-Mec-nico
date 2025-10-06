@@ -11,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -19,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,24 +51,54 @@ class RepuestoControllerTest {
     }
 
     @Test
-    void testFindAll_Success() throws Exception {
-        Mockito.when(repuestoService.findAll()).thenReturn(Arrays.asList(repuesto1, repuesto2));
+    void testFindAllPaged_Success() throws Exception {
+        Page<Repuesto> page = new PageImpl<>(Arrays.asList(repuesto1, repuesto2));
+        Mockito.when(repuestoService.findAll(any(Pageable.class))).thenReturn(page);
 
-        mockMvc.perform(get("/repuestos"))
+        mockMvc.perform(get("/repuestos?page=0&size=10&sortBy=id"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].nombre").value("Rueda"))
-                .andExpect(jsonPath("$[0].descripcion").value("Rueda de automóvil"))
-                .andExpect(jsonPath("$[0].stock").value(10))
-                .andExpect(jsonPath("$[0].precio").value(100.0));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].nombre").value("Rueda"))
+                .andExpect(jsonPath("$.content[1].nombre").value("Motor"));
     }
 
     @Test
-    void testFindAll_NotFound() throws Exception {
-        Mockito.when(repuestoService.findAll()).thenReturn(Collections.emptyList());
+    void testFindAllPaged_NotFound() throws Exception {
+        Page<Repuesto> emptyPage = new PageImpl<>(Collections.emptyList());
+        Mockito.when(repuestoService.findAll(any(Pageable.class))).thenReturn(emptyPage);
 
-        mockMvc.perform(get("/repuestos"))
+        mockMvc.perform(get("/repuestos?page=0&size=10&sortBy=id"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testSearchByNombre_Found() throws Exception {
+        Page<Repuesto> page = new PageImpl<>(Arrays.asList(repuesto1));
+        Mockito.when(repuestoService.findByNombre(eq("Rueda"), any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get("/repuestos/search?nombre=Rueda&page=0&size=10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.content[0].nombre").value("Rueda"));
+    }
+
+    @Test
+    void testSearchByNombre_NotFound() throws Exception {
+        Page<Repuesto> emptyPage = new PageImpl<>(Collections.emptyList());
+        Mockito.when(repuestoService.findByNombre(eq("NoExiste"), any(Pageable.class))).thenReturn(emptyPage);
+
+        mockMvc.perform(get("/repuestos/search?nombre=NoExiste&page=0&size=10"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testSearch_NoNombre_ReturnsAll() throws Exception {
+        Page<Repuesto> page = new PageImpl<>(Arrays.asList(repuesto1, repuesto2));
+        Mockito.when(repuestoService.findAll(any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get("/repuestos/search?page=0&size=10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2));
     }
 
     @Test
@@ -82,7 +115,7 @@ class RepuestoControllerTest {
 
     @Test
     void testFindById_NotFound() throws Exception {
-        Mockito.when(repuestoService.findById(anyLong())).thenReturn(null);
+        Mockito.when(repuestoService.findById(any(Long.class))).thenReturn(null);
 
         mockMvc.perform(get("/repuestos/10"))
                 .andExpect(status().isNotFound());

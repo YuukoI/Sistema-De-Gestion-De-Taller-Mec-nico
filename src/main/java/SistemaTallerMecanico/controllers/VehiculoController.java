@@ -5,6 +5,10 @@ import SistemaTallerMecanico.entities.Vehiculo;
 import SistemaTallerMecanico.services.VehiculoService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -24,13 +28,13 @@ public class VehiculoController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<List<Vehiculo>> findAll() {
-        List<Vehiculo> vehiculos = vehiculoService.getAllVehiculos();
-        if(vehiculos.isEmpty()){
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(vehiculos);
+    public ResponseEntity<Page<Vehiculo>> findAllPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy)
+    {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return ResponseEntity.ok(vehiculoService.getAllVehiculos(pageable));
     }
 
     @GetMapping("/{id}")
@@ -69,6 +73,7 @@ public class VehiculoController {
         vehiculo.setPatente(vehiculoDTO.getPatente());
         vehiculo.setModelo(vehiculoDTO.getModelo());
         vehiculo.setMarca(vehiculoDTO.getMarca());
+        vehiculo.setNombrePropietario(vehiculoDTO.getNombrePropietario());
 
         return ResponseEntity.ok().body(vehiculoService.save(vehiculo));
     }
@@ -92,7 +97,20 @@ public class VehiculoController {
         vehiculo.setPatente(vehiculoDTO.getPatente());
         vehiculo.setModelo(vehiculoDTO.getModelo());
         vehiculo.setMarca(vehiculoDTO.getMarca());
+        vehiculo.setNombrePropietario(vehiculoDTO.getNombrePropietario());
 
         return  ResponseEntity.ok().body(vehiculoService.save(vehiculo));
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<Page<Vehiculo>> search(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return ResponseEntity.ok(vehiculoService.findByPatenteContainingIgnoreCaseOrNombrePropietarioContainingIgnoreCase(keyword, pageable));
     }
 }

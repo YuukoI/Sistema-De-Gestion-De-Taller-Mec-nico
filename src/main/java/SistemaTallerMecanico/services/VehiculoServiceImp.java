@@ -3,6 +3,8 @@ package SistemaTallerMecanico.services;
 import SistemaTallerMecanico.entities.Vehiculo;
 import SistemaTallerMecanico.repositories.VehiculoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +16,8 @@ public class VehiculoServiceImp implements VehiculoService {
     private final VehiculoRepository vehiculoRepository;
 
     @Override
-    public List<Vehiculo> getAllVehiculos() {
-        return vehiculoRepository.findAll();
+    public Page<Vehiculo> getAllVehiculos(Pageable pageable) {
+        return vehiculoRepository.findAll(pageable);
     }
 
     @Override
@@ -39,7 +41,13 @@ public class VehiculoServiceImp implements VehiculoService {
     }
 
     @Override
-    public Vehiculo getVehiculoByPatente(String patente) {
-        return vehiculoRepository.findByPatente(patente).orElse(null);
+    public Page<Vehiculo> findByPatenteContainingIgnoreCaseOrNombrePropietarioContainingIgnoreCase(String filtro, Pageable pageable) {
+        return vehiculoRepository.findByPatenteContainingIgnoreCaseOrNombrePropietarioContainingIgnoreCase(filtro, filtro, pageable);
     }
+
+    @Override
+    public Vehiculo findByPatente(String patente) {
+        return vehiculoRepository.findByPatente(patente);
+    }
+
 }

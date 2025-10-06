@@ -3,6 +3,8 @@ package SistemaTallerMecanico.services;
 import SistemaTallerMecanico.entities.Presupuesto;
 import SistemaTallerMecanico.repositories.PresupuestoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +16,8 @@ public class PresupuestoServiceImp implements PresupuestoService {
     private final PresupuestoRepository presupuestoRepository;
 
     @Override
-    public List<Presupuesto> findAll() {
-        return presupuestoRepository.findAll();
+    public Page<Presupuesto> findAll(Pageable pageable) {
+        return presupuestoRepository.findAll(pageable);
     }
 
     @Override
@@ -46,5 +48,10 @@ public class PresupuestoServiceImp implements PresupuestoService {
     @Override
     public List<Presupuesto> findPresupuestoByVehiculoNombrePropietario(String nombrePropietario) {
         return presupuestoRepository.findByNombrePropietario(nombrePropietario);
+    }
+
+    @Override
+    public Page<Presupuesto> findByPatenteContainingIgnoreCaseOrNombrePropietarioContainingIgnoreCase(String filtro, Pageable pageable) {
+        return presupuestoRepository.findByPatenteContainingIgnoreCaseOrNombrePropietarioContainingIgnoreCase(filtro, filtro, pageable);
     }
 }

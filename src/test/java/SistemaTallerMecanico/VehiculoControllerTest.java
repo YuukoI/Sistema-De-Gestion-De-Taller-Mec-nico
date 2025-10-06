@@ -1,5 +1,6 @@
 package SistemaTallerMecanico;
 
+
 import SistemaTallerMecanico.controllers.VehiculoController;
 import SistemaTallerMecanico.dtos.VehiculoDTO;
 import SistemaTallerMecanico.entities.Vehiculo;
@@ -7,24 +8,26 @@ import SistemaTallerMecanico.services.VehiculoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import static org.mockito.Mockito.*;
+
 @WebMvcTest(VehiculoController.class)
 class VehiculoControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -36,109 +39,179 @@ class VehiculoControllerTest {
 
     private Vehiculo vehiculo1;
     private Vehiculo vehiculo2;
-    private VehiculoDTO vehiculoDTO;
 
     @BeforeEach
     void setUp() {
-        vehiculo1 = new Vehiculo(1L, "ABC123", "Juan Perez", "Toyota", "Corolla");
-        vehiculo2 = new Vehiculo(2L, "DEF456", "Ana Gomez", "Honda", "Civic");
+        vehiculo1 = new Vehiculo();
+        vehiculo1.setId(1L);
+        vehiculo1.setPatente("ABC123");
+        vehiculo1.setMarca("Toyota");
+        vehiculo1.setModelo("Corolla");
+        vehiculo1.setNombrePropietario("Juan Perez");
 
-        vehiculoDTO = new VehiculoDTO();
-        vehiculoDTO.setPatente("CCC333");
-        vehiculoDTO.setNombrePropietario("Carlos Lopez");
-        vehiculoDTO.setMarca("Honda");
-        vehiculoDTO.setModelo("Civic");
+        vehiculo2 = new Vehiculo();
+        vehiculo2.setId(2L);
+        vehiculo2.setPatente("XYZ789");
+        vehiculo2.setMarca("Ford");
+        vehiculo2.setModelo("Focus");
+        vehiculo2.setNombrePropietario("Maria Lopez");
     }
 
     @Test
-    void testFindAll_Success() throws Exception {
-        Mockito.when(vehiculoService.getAllVehiculos()).thenReturn(Arrays.asList(vehiculo1, vehiculo2));
+    @WithMockUser(roles = {"USER"})
+    void testFindAllPaged() throws Exception {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
+        Page<Vehiculo> page = new PageImpl<>(Arrays.asList(vehiculo1, vehiculo2));
 
-        mockMvc.perform(get("/vehiculos"))
+        when(vehiculoService.getAllVehiculos(pageable)).thenReturn(page);
+
+        mockMvc.perform(get("/vehiculos")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sortBy", "id"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].patente").value("ABC123"))
-                .andExpect(jsonPath("$[0].nombrePropietario").value("Juan Perez"));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].patente").value("ABC123"));
+
+        verify(vehiculoService, times(1)).getAllVehiculos(pageable);
     }
 
     @Test
-    void testFindAll_NoContent() throws Exception {
-        Mockito.when(vehiculoService.getAllVehiculos()).thenReturn(Collections.emptyList());
-
-        mockMvc.perform(get("/vehiculos"))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
+    @WithMockUser(roles = {"USER"})
     void testFindById_Found() throws Exception {
-        Mockito.when(vehiculoService.getVehiculoById(1L)).thenReturn(vehiculo1);
+        when(vehiculoService.getVehiculoById(1L)).thenReturn(vehiculo1);
 
         mockMvc.perform(get("/vehiculos/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.patente").value("ABC123"))
-                .andExpect(jsonPath("$.nombrePropietario").value("Juan Perez"));
+                .andExpect(jsonPath("$.patente").value("ABC123"));
+
+        verify(vehiculoService, times(1)).getVehiculoById(1L);
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     void testFindById_NotFound() throws Exception {
-        Mockito.when(vehiculoService.getVehiculoById(anyLong())).thenReturn(null);
+        when(vehiculoService.getVehiculoById(3L)).thenReturn(null);
 
-        mockMvc.perform(get("/vehiculos/10"))
+        mockMvc.perform(get("/vehiculos/3"))
                 .andExpect(status().isNotFound());
+
+        verify(vehiculoService, times(1)).getVehiculoById(3L);
     }
 
     @Test
-    void testSave_Success() throws Exception {
-        Vehiculo savedVehiculo = new Vehiculo(3L, vehiculoDTO.getPatente(), vehiculoDTO.getNombrePropietario(), vehiculoDTO.getMarca(), vehiculoDTO.getModelo());
-        Mockito.when(vehiculoService.save(any(Vehiculo.class))).thenReturn(savedVehiculo);
+    @WithMockUser(roles = {"ADMIN"})
+    void testSave() throws Exception {
+        VehiculoDTO dto = new VehiculoDTO();
+        dto.setPatente("NEW123");
+        dto.setMarca("Honda");
+        dto.setModelo("Civic");
+        dto.setNombrePropietario("Pedro Gomez");
+
+        Vehiculo vehiculoGuardado = new Vehiculo();
+        vehiculoGuardado.setId(3L);
+        vehiculoGuardado.setPatente(dto.getPatente());
+        vehiculoGuardado.setMarca(dto.getMarca());
+        vehiculoGuardado.setModelo(dto.getModelo());
+        vehiculoGuardado.setNombrePropietario(dto.getNombrePropietario());
+
+        when(vehiculoService.save(any(Vehiculo.class))).thenReturn(vehiculoGuardado);
 
         mockMvc.perform(post("/vehiculos")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(vehiculoDTO)))
+                        .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.patente").value("CCC333"))
-                .andExpect(jsonPath("$.nombrePropietario").value("Carlos Lopez"));
+                .andExpect(jsonPath("$.id").value(3))
+                .andExpect(jsonPath("$.patente").value("NEW123"));
+
+        verify(vehiculoService, times(1)).save(any(Vehiculo.class));
     }
 
     @Test
-    void testDelete_Success() throws Exception {
-        Mockito.when(vehiculoService.getVehiculoById(1L)).thenReturn(vehiculo1);
+    @WithMockUser(roles = {"ADMIN"})
+    void testUpdate_Found() throws Exception {
+        VehiculoDTO dto = new VehiculoDTO();
+        dto.setPatente("UPDATED123");
+        dto.setMarca("Honda");
+        dto.setModelo("Civic");
+        dto.setNombrePropietario("Pedro Gomez");
+
+        when(vehiculoService.getVehiculoById(1L)).thenReturn(vehiculo1);
+        when(vehiculoService.save(any(Vehiculo.class))).thenReturn(vehiculo1);
+
+        mockMvc.perform(put("/vehiculos/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk());
+
+        verify(vehiculoService, times(1)).getVehiculoById(1L);
+        verify(vehiculoService, times(1)).save(any(Vehiculo.class));
+    }
+
+    @Test
+    @WithMockUser(roles = {"ADMIN"})
+    void testUpdate_NotFound() throws Exception {
+        VehiculoDTO dto = new VehiculoDTO();
+        dto.setPatente("UPDATED123");
+        dto.setMarca("Honda");
+        dto.setModelo("Civic");
+        dto.setNombrePropietario("Pedro Gomez");
+
+        when(vehiculoService.getVehiculoById(5L)).thenReturn(null);
+
+        mockMvc.perform(put("/vehiculos/5")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isNotFound());
+
+        verify(vehiculoService, times(1)).getVehiculoById(5L);
+        verify(vehiculoService, never()).save(any(Vehiculo.class));
+    }
+
+    @Test
+    @WithMockUser(roles = {"ADMIN"})
+    void testDeleteById_Found() throws Exception {
+        when(vehiculoService.getVehiculoById(1L)).thenReturn(vehiculo1);
+        doNothing().when(vehiculoService).deleteById(1L);
 
         mockMvc.perform(delete("/vehiculos/1"))
                 .andExpect(status().isOk());
 
-        Mockito.verify(vehiculoService).deleteById(1L);
+        verify(vehiculoService, times(1)).getVehiculoById(1L);
+        verify(vehiculoService, times(1)).deleteById(1L);
     }
 
     @Test
-    void testDelete_NotFound() throws Exception {
-        Mockito.when(vehiculoService.getVehiculoById(1L)).thenReturn(null);
+    @WithMockUser(roles = {"ADMIN"})
+    void testDeleteById_NotFound() throws Exception {
+        when(vehiculoService.getVehiculoById(3L)).thenReturn(null);
 
-        mockMvc.perform(delete("/vehiculos/1"))
+        mockMvc.perform(delete("/vehiculos/3"))
                 .andExpect(status().isNotFound());
+
+        verify(vehiculoService, times(1)).getVehiculoById(3L);
+        verify(vehiculoService, never()).deleteById(anyLong());
     }
 
     @Test
-    void testUpdate_Success() throws Exception {
-        Vehiculo updatedVehiculo = new Vehiculo(1L, vehiculoDTO.getPatente(), vehiculoDTO.getNombrePropietario(), vehiculoDTO.getMarca(), vehiculoDTO.getModelo());
-        Mockito.when(vehiculoService.getVehiculoById(1L)).thenReturn(vehiculo1);
-        Mockito.when(vehiculoService.save(any(Vehiculo.class))).thenReturn(updatedVehiculo);
+    @WithMockUser(roles = {"USER"})
+    void testSearch() throws Exception {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
+        Page<Vehiculo> page = new PageImpl<>(List.of(vehiculo1));
 
-        mockMvc.perform(put("/vehiculos/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(vehiculoDTO)))
+        when(vehiculoService.findByPatenteContainingIgnoreCaseOrNombrePropietarioContainingIgnoreCase("Juan", pageable))
+                .thenReturn(page);
+
+        mockMvc.perform(get("/vehiculos/search")
+                        .param("keyword", "Juan")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sortBy", "id"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.patente").value("CCC333"))
-                .andExpect(jsonPath("$.nombrePropietario").value("Carlos Lopez"));
+                .andExpect(jsonPath("$.content[0].nombrePropietario").value("Juan Perez"));
+
+        verify(vehiculoService, times(1))
+                .findByPatenteContainingIgnoreCaseOrNombrePropietarioContainingIgnoreCase("Juan", pageable);
     }
 
-    @Test
-    void testUpdate_NotFound() throws Exception {
-        Mockito.when(vehiculoService.getVehiculoById(1L)).thenReturn(null);
-
-        mockMvc.perform(put("/vehiculos/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(vehiculoDTO)))
-                .andExpect(status().isNotFound());
-    }
 }

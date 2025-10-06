@@ -1,12 +1,14 @@
 package SistemaTallerMecanico.services;
 
 import SistemaTallerMecanico.entities.Vehiculo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface VehiculoService {
 
-    List<Vehiculo> getAllVehiculos();
+    Page<Vehiculo> getAllVehiculos(Pageable pageable);
 
     Vehiculo getVehiculoById(Long id);
 
@@ -16,5 +18,9 @@ public interface VehiculoService {
 
     void deleteById(Long id);
 
-    Vehiculo getVehiculoByPatente(String patente);
+    Page<Vehiculo> findByPatenteContainingIgnoreCaseOrNombrePropietarioContainingIgnoreCase(
+            String filtro, Pageable pageable
+    );
+
+    Vehiculo findByPatente(String patente);
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.aspectj.bridge.IMessage;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -39,12 +40,18 @@ public class Presupuesto {
     @Positive(message = "Mano de obra no puede ser negativo")
     private double manoDeObra;
 
-    private double total;
+    @NotNull(message = "Precio total no puede ser nulo")
+    @Positive(message = "El precio total debe ser positivo")
+    private Double total;
 
     @NotBlank(message = "Falta descripción")
     private String descripcion;
 
+    private LocalDate fecha;
 
+    private String marca;
+
+    private String modelo;
 
     public void calcularPresupuestoTotal(){
         double totalRepuestos = repuestos.stream()

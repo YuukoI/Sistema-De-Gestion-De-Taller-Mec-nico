@@ -6,14 +6,12 @@ import SistemaTallerMecanico.services.RepuestoServiceImp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.domain.*;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class RepuestoServiceTest {
@@ -35,18 +33,19 @@ class RepuestoServiceTest {
 
     @Test
     void testFindAll() {
-        when(repuestoRepository.findAll()).thenReturn(Arrays.asList(repuesto1, repuesto2));
+        Page<Repuesto> page = new PageImpl<>(Arrays.asList(repuesto1, repuesto2));
+        when(repuestoRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        List<Repuesto> repuestos = repuestoService.findAll();
+        Page<Repuesto> repuestos = repuestoService.findAll(PageRequest.of(0, 10));
 
-        assertEquals(2, repuestos.size());
-        assertEquals("Rueda", repuestos.get(0).getNombre());
-        verify(repuestoRepository, times(1)).findAll();
+        assertEquals(2, repuestos.getContent().size());
+        assertEquals("Rueda", repuestos.getContent().get(0).getNombre());
+        verify(repuestoRepository, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
     void testFindById_Found() {
-        when(repuestoRepository.findById(1L)).thenReturn(Optional.of(repuesto1));
+        when(repuestoRepository.findById(1L)).thenReturn(java.util.Optional.of(repuesto1));
 
         Repuesto repuesto = repuestoService.findById(1L);
 
@@ -57,7 +56,7 @@ class RepuestoServiceTest {
 
     @Test
     void testFindById_NotFound() {
-        when(repuestoRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(repuestoRepository.findById(anyLong())).thenReturn(java.util.Optional.empty());
 
         Repuesto repuesto = repuestoService.findById(10L);
 
@@ -98,22 +97,26 @@ class RepuestoServiceTest {
 
     @Test
     void testFindByNombre_Found() {
-        when(repuestoRepository.findByNombre("Rueda")).thenReturn(Optional.of(repuesto1));
+        Page<Repuesto> page = new PageImpl<>(Arrays.asList(repuesto1));
+        when(repuestoRepository.findByNombreContainingIgnoreCase(eq("Rueda"), any(Pageable.class))).thenReturn(page);
 
-        Repuesto repuesto = repuestoService.findByNombre("Rueda");
+        Page<Repuesto> result = repuestoService.findByNombre("Rueda", PageRequest.of(0, 10));
 
-        assertNotNull(repuesto);
-        assertEquals("Rueda", repuesto.getNombre());
-        verify(repuestoRepository, times(1)).findByNombre("Rueda");
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("Rueda", result.getContent().get(0).getNombre());
+        verify(repuestoRepository, times(1)).findByNombreContainingIgnoreCase(eq("Rueda"), any(Pageable.class));
     }
 
     @Test
     void testFindByNombre_NotFound() {
-        when(repuestoRepository.findByNombre("NoExiste")).thenReturn(Optional.empty());
+        Page<Repuesto> emptyPage = new PageImpl<>(Arrays.asList());
+        when(repuestoRepository.findByNombreContainingIgnoreCase(eq("NoExiste"), any(Pageable.class))).thenReturn(emptyPage);
 
-        Repuesto repuesto = repuestoService.findByNombre("NoExiste");
+        Page<Repuesto> result = repuestoService.findByNombre("NoExiste", PageRequest.of(0, 10));
 
-        assertNull(repuesto);
-        verify(repuestoRepository, times(1)).findByNombre("NoExiste");
+        assertNotNull(result);
+        assertTrue(result.getContent().isEmpty());
+        verify(repuestoRepository, times(1)).findByNombreContainingIgnoreCase(eq("NoExiste"), any(Pageable.class));
     }
 }

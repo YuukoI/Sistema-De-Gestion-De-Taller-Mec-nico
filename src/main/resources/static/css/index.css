@@ -1,0 +1,226 @@
+/* ============================
+   Reset y estructura base
+============================ */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: #2f3640;
+    background: url("../images/fondo.jpg") no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* ============================
+   Header
+============================ */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background: rgba(44, 44, 44, 0.5);
+    color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    gap: 80px;
+}
+
+nav a {
+    margin: 0 10px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size:1.5rem;
+    transition: 0.2s;
+}
+
+nav a:hover {
+    color: #fbc531;
+}
+
+.user {
+    position: relative;
+}
+
+#usernameBtn {
+    background: #fbc531;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+#usernameBtn:hover {
+    background: #e1a82d;
+}
+
+.dropdown {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    left: auto;
+    z-index: 1000;
+}
+
+.dropdown button {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+.dropdown button:hover {
+    background: #f0f0f0;
+}
+
+/* ============================
+   Main
+============================ */
+main {
+    flex: 1; /* Esto empuja el footer hacia abajo */
+    padding: 40px;
+    text-align: center;
+    background: rgba(255,255,255,0.85);
+    border-radius: 12px;
+    margin: 50px auto;
+    max-width: 900px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* ============================
+   Footer
+============================ */
+.footer {
+    background: rgba(44, 44, 44, 0.5); /* misma transparencia que header */
+    color: white;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center; /* esto alinea todos los íconos verticalmente */
+    line-height: 1.2;
+}
+
+.footer-item {
+    display: flex;
+    align-items: center; /* alinea ícono + texto */
+    gap: 6px;
+    margin-right: 350px;
+}
+.footer-item:last-child {
+    margin-right: 0; /* elimina margen extra del último */
+}
+
+.footer i {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.footer-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+    text-align: left;
+}
+
+.footer-btn:hover {
+    color: #fbc531;
+    text-decoration: underline;
+}
+
+/* ============================
+   Responsivo
+============================ */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    main {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 10px 15px;
+        gap: 8px;
+    }
+
+    .footer-item {
+        margin: 4px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    nav a {
+        padding: 8px 0;
+    }
+
+    #usernameBtn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    main {
+        margin: 15px;
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+
+    .footer-item i {
+        font-size: 0.9rem;
+    }
+
+    .footer-btn {
+        font-size: 0.8rem;
+    }
+}

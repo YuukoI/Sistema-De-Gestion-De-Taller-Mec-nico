@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -27,9 +28,15 @@ public class PresupuestoDTO {
     @Positive(message = "Mano de obra no puede ser negativo")
     private double manoDeObra;
 
-    private double total;
+    private Double total;
 
     @NotBlank(message = "Falta descripción")
     private String descripcion;
+
+    private LocalDate fecha;
+
+    private String marca;
+
+    private String modelo;
 
 }

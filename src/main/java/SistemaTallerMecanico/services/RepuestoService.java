@@ -1,12 +1,14 @@
 package SistemaTallerMecanico.services;
 
 import SistemaTallerMecanico.entities.Repuesto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface RepuestoService {
 
-    List<Repuesto> findAll();
+    Page<Repuesto> findAll(Pageable pageable);
 
     Repuesto findById(Long id);
 
@@ -16,5 +18,7 @@ public interface RepuestoService {
 
     void delete(Long id);
 
-    Repuesto findByNombre(String nombre);
+    Page<Repuesto> findByNombre(String nombre, Pageable pageable);
+
+    Repuesto actualizarStock(Long id, int nuevoStock);
 }
