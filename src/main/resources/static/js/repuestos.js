@@ -26,9 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
         username = decoded?.sub || decoded?.username || "Usuario";
         usernameBtn.textContent = username;
         logoutBtn.style.display = "block";
-        esAdmin = decoded?.sub === "ADMIN";
 
-        // Navbar según rol
+        esAdmin = decoded?.rol === "ADMIN";
+
         let navHtml = `
             <a href="vehiculos.html">Vehículos</a>
             <a href="repuestos.html">Repuestos</a>
@@ -58,8 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("jwt");
-        localStorage.removeItem("username");
-        window.location.reload();
+        window.location.href = "formLogin.html";
     });
 
     document.addEventListener("click", (e) => {
@@ -130,7 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    // Función global para los botones + y -
     window.cambiarStock = (id, nuevoStock) => {
         if (nuevoStock < 0) {
             alert("El stock no puede ser negativo");
@@ -144,7 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
         cargarRepuestos($(this).val());
     });
 
-    // Mostrar u ocultar botón de agregar repuesto según rol
     $("#agregarRepuestoBtn").toggle(esAdmin);
     $("#agregarRepuestoBtn").click(() => {
         if (esAdmin) {
@@ -186,7 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cargarRepuestos();
 
-    // Redirección al hacer click en logo
     const logo = document.querySelector(".logo");
     logo.addEventListener("click", () => {
         window.location.href = "../index.html";

@@ -17,12 +17,10 @@ public interface UserService {
 
     User save(User user);
 
-    User editUser(User user);
-
     void deleteById(Long id);
 
     Page<User> findAllPaged(Pageable pageable);
 
-    Page<User> findByUsernameContainingIgnoreCase(String username, Pageable pageable);
+    Page<User> findByUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String keyword, Pageable pageable);
 
 }

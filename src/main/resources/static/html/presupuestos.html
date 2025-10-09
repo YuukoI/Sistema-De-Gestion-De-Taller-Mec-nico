@@ -19,8 +19,8 @@
     </div>
 </header>
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between mb-3">
+<main class="container mt-4">
+    <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
         <input type="text" id="searchFiltro" class="form-control w-50" placeholder="Buscar por patente o propietario">
         <button id="agregarPresupuestoBtn" class="btn btn-primary">Agregar Presupuesto</button>
     </div>
@@ -38,18 +38,41 @@
             <th>PDF</th>
         </tr>
         </thead>
-        <tbody id="presupuestosTableBody">
-        </tbody>
+        <tbody id="presupuestosTableBody"></tbody>
     </table>
 
-    <div class="d-flex justify-content-end align-items-center gap-2 mt-3">
+    <div class="d-flex justify-content-end align-items-center gap-2 mt-3 flex-wrap">
         <span id="paginaActual" class="pagina-label"></span>
         <button id="prevBtn" class="btn btn-secondary">Anterior</button>
         <button id="nextBtn" class="btn btn-secondary">Siguiente</button>
     </div>
-</div>
+</main>
 
+<footer class="footer">
+    <div class="footer-item">
+        <a href="https://www.instagram.com/tuusuario" target="_blank" class="text-white text-decoration-none">
+            <i class="bi bi-instagram"></i> Instagram
+        </a>
+    </div>
+    <div class="footer-item">
+        <button class="footer-btn" onclick="copiarTexto('tel:+541112345678')">
+            <i class="bi bi-telephone-fill"></i> +54 11 1234-5678
+        </button>
+    </div>
+    <div class="footer-item">
+        <button class="footer-btn" onclick="copiarTexto('info@mgautomotriz.com')">
+            <i class="bi bi-envelope-fill"></i> info@mgautomotriz.com
+        </button>
+    </div>
+    <div class="footer-item">
+        <i class="bi bi-geo-alt-fill"></i> Av.Ejemplo 123
+    </div>
+    <div class="footer-item">
+        <i class="bi bi-clock-fill"></i> Lun-Vie 9:00-18:00
+    </div>
+</footer>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="../js/presupuestos.js"></script>
+<script src="../js/auth.js"></script>
 </body>
 </html>

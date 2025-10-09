@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Redirigir a login si hacen click en "Acceder"
     document.getElementById("goLogin").addEventListener("click", () => {
         window.location.href = "formLogin.html";
     });

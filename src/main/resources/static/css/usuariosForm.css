@@ -93,11 +93,15 @@ header {
     color: white;
 }
 
-header .logo {
+.logo {
     font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
-    margin-bottom: 5px;
+    transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+    opacity: 0.8;
 }
 
 nav {

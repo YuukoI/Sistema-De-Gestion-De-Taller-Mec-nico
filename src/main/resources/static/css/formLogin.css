@@ -26,6 +26,14 @@ h2 {
   color: #cccccc;
 }
 
+#signUp {
+  cursor: pointer;
+}
+
+#signUp:hover {
+  color: #007bff;
+}
+
 .wrapper {
   display: flex;
   align-items: center;

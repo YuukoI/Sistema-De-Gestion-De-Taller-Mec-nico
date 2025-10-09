@@ -4,6 +4,14 @@ body {
     color: #2f3640;
     background: url("../images/fondo.jpg") no-repeat center center fixed;
     background-size: cover;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
 }
 
 header {
@@ -19,6 +27,12 @@ header {
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+    opacity: 0.8;
 }
 
 nav {
@@ -41,12 +55,6 @@ nav a:hover {
 
 .user {
     position: relative;
-}
-
-header .logo {
-    font-weight: bold;
-    font-size: 1.5rem;
-    cursor: pointer;
 }
 
 #usernameBtn {
@@ -73,7 +81,6 @@ header .logo {
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    left: auto;
     z-index: 1000;
 }
 
@@ -90,23 +97,6 @@ header .logo {
     background: #f0f0f0;
 }
 
-.pagina-label {
-    font-weight: bold;
-    color: white;
-    padding: 0;
-    background: transparent;
-}
-
-main {
-    padding: 40px;
-    text-align: center;
-    background: rgba(255,255,255,0.85);
-    border-radius: 12px;
-    margin: 50px auto;
-    max-width: 900px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
 .table th, .table td {
     text-align: center;
     vertical-align: middle;
@@ -118,6 +108,50 @@ main {
 
 #agregarRepuestoBtn {
     height: 38px;
+}
+
+.footer {
+    background: rgba(44, 44, 44, 0.5);
+    color: white;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    line-height: 1.2;
+}
+
+.footer-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 350px;
+}
+
+.footer-item:last-child {
+    margin-right: 0;
+}
+
+.footer-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+    text-align: left;
+}
+
+.footer-btn:hover {
+    color: #fbc531;
+    text-decoration: underline;
+}
+
+.footer i {
+    font-size: 1.1rem;
+    line-height: 1;
 }
 
 @media (max-width: 768px) {
@@ -137,11 +171,27 @@ main {
         margin: 20px;
         padding: 20px;
     }
+
+    .footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 10px 15px;
+        gap: 12px;
+    }
+
+    .footer-item { margin-right: 0; }
 }
 
 @media (max-width: 480px) {
     .logo {
         font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .logo:hover {
+        opacity: 0.8;
     }
 
     nav {
@@ -159,9 +209,11 @@ main {
         font-size: 0.9rem;
     }
 
-    main {
-        margin: 15px;
-        padding: 15px;
+    .footer-item i {
         font-size: 0.9rem;
+    }
+
+    .footer-btn {
+        font-size: 0.8rem;
     }
 }

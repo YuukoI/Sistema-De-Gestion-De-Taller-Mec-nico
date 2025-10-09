@@ -4,6 +4,14 @@ body {
     color: #2f3640;
     background: url("../images/fondo.jpg") no-repeat center center fixed;
     background-size: cover;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
 }
 
 header {
@@ -16,20 +24,29 @@ header {
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
-.logo { font-size: 1.5rem;
+.logo {
+    font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
+    transition: opacity 0.2s ease;
 }
+
+.logo:hover {
+    opacity: 0.8;
+}
+
 nav {
     display: flex;
     gap: 55px;
 }
+
 nav a {
     color: white;
     text-decoration: none;
     font-size: 1.5rem;
     font-weight: 500;
 }
+
 nav a:hover {
     color: #fbc531;
 }
@@ -37,13 +54,16 @@ nav a:hover {
 .user {
     position: relative;
 }
-#usernameBtn { background: #fbc531;
+
+#usernameBtn {
+    background: #fbc531;
     border: none;
     padding: 8px 15px;
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
 }
+
 #usernameBtn:hover {
     background: #e1a82d;
 }
@@ -60,6 +80,7 @@ nav a:hover {
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     z-index: 1000;
 }
+
 .dropdown button {
     background: none;
     border: none;
@@ -68,8 +89,13 @@ nav a:hover {
     width: 100%;
     text-align: left;
 }
+
 .dropdown button:hover {
     background: #f0f0f0;
+}
+
+#searchFiltro {
+    max-width: 400px;
 }
 
 .table th, .table td {
@@ -77,18 +103,48 @@ nav a:hover {
     vertical-align: middle;
 }
 
-#searchFiltro {
-    max-width: 400px;
-}
-
-#agregarUsuarioBtn {
-    height: 38px;
-}
-
-.pagina-label {
-    font-weight: bold;
+.footer {
+    background: rgba(44, 44, 44, 0.5);
     color: white;
-    background: transparent;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    line-height: 1.2;
+}
+
+.footer-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 350px;
+}
+
+.footer-item:last-child {
+    margin-right: 0;
+}
+
+.footer-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+    text-align: left;
+}
+
+.footer-btn:hover {
+    color: #fbc531;
+    text-decoration: underline;
+}
+
+.footer i {
+    font-size: 1.1rem;
+    line-height: 1;
 }
 
 @media (max-width: 768px) {
@@ -101,17 +157,43 @@ nav a:hover {
     nav {
         flex-wrap: wrap;
         gap: 10px;
-        margin-top: 10px; }
+        margin-top: 10px;
+    }
+
+    main {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 10px 15px;
+        gap: 12px;
+    }
+
+    .footer-item {
+        margin-right: 0;
+    }
+
 }
 
 @media (max-width: 480px) {
     .logo {
         font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .logo:hover {
+        opacity: 0.8;
     }
 
     nav {
         flex-direction: column;
-        gap: 8px; width: 100%;
+        gap: 8px;
+        width: 100%;
     }
 
     nav a {
@@ -122,4 +204,13 @@ nav a:hover {
         padding: 6px 12px;
         font-size: 0.9rem;
     }
+
+    .footer-item i {
+        font-size: 0.9rem;
+    }
+
+    .footer-btn {
+        font-size: 0.8rem;
+    }
+
 }

@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
         username = decoded?.sub || decoded?.username || "Usuario";
         usernameBtn.textContent = username;
         logoutBtn.style.display = "block";
-        esAdmin = decoded?.sub === "ADMIN";
 
-        // Navbar dinámico según rol
+        esAdmin = decoded?.rol === "ADMIN";
+
         let navHtml = `
             <a href="html/vehiculos.html">Vehículos</a>
             <a href="html/repuestos.html">Repuestos</a>
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("jwt");
-        window.location.reload();
+        window.location.href = "html/formLogin.html";
     });
 
     document.addEventListener("click", (e) => {
@@ -61,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Función global para copiar texto
 function copiarTexto(texto) {
     navigator.clipboard.writeText(texto).then(() => {
         alert(`Copiado: ${texto}`);

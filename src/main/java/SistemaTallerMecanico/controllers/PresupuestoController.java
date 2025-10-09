@@ -80,7 +80,6 @@ public class PresupuestoController {
         Presupuesto presupuesto = new Presupuesto();
         presupuesto.setPatente(presupuestoDTO.getPatente());
         presupuesto.setNombrePropietario(presupuestoDTO.getNombrePropietario());
-        presupuesto.setRepuestos(presupuestoDTO.getRepuestos());
         presupuesto.setManoDeObra(presupuestoDTO.getManoDeObra());
         presupuesto.setTotal(presupuestoDTO.getTotal());
         presupuesto.setDescripcion(presupuestoDTO.getDescripcion());
@@ -121,7 +120,6 @@ public class PresupuestoController {
 
         presupuesto.setPatente(presupuestoDTO.getPatente());
         presupuesto.setNombrePropietario(presupuestoDTO.getNombrePropietario());
-        presupuesto.setRepuestos(presupuestoDTO.getRepuestos());
         presupuesto.setManoDeObra(presupuestoDTO.getManoDeObra());
         presupuesto.setTotal(presupuestoDTO.getTotal());
         presupuesto.setDescripcion(presupuestoDTO.getDescripcion());

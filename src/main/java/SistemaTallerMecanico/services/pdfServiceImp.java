@@ -7,7 +7,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
 
@@ -24,30 +23,21 @@ public class pdfServiceImp implements pdfService {
             Font subtitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
             Font normal = FontFactory.getFont(FontFactory.HELVETICA, 11);
 
-            // 1️⃣ MG AUTOMOTRIZ centrado
-            Paragraph header = new Paragraph("MG SERVICIO AUTOMOTRIZ", titulo);
-            header.setAlignment(Element.ALIGN_CENTER);
-            document.add(header);
-
-            // 2️⃣ Logo centrado
-            try {
-                Image logo = Image.getInstance("src/main/resources/static/images/logo.jpg");
-                logo.scaleToFit(100, 50);
-                logo.setAlignment(Element.ALIGN_CENTER);
-                document.add(logo);
-            } catch (Exception e) {
-                // Si no hay logo, no rompe el PDF
-            }
-
-            document.add(new Paragraph("\n"));
-
-            // 3️⃣ Título "RECIBO DE PAGO" centrado
-            Paragraph reciboTitulo = new Paragraph("RECIBO DE PAGO", subtitulo);
+            Paragraph reciboTitulo = new Paragraph("RECIBO DE PAGO", titulo);
             reciboTitulo.setAlignment(Element.ALIGN_CENTER);
             document.add(reciboTitulo);
             document.add(new Paragraph("\n"));
 
-            // 4️⃣ Fecha y Recibo arriba a la derecha
+            try {
+                Image logo = Image.getInstance("src/main/resources/static/images/logo.jpg");
+                logo.scaleToFit(250, 250);
+                logo.setAlignment(Element.ALIGN_CENTER);
+                document.add(logo);
+            } catch (Exception e) {
+            }
+
+            document.add(new Paragraph("\n"));
+
             DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             PdfPTable reciboTable = new PdfPTable(1);
             reciboTable.setWidthPercentage(100);
@@ -66,7 +56,6 @@ public class pdfServiceImp implements pdfService {
 
             document.add(new Paragraph("\n"));
 
-            // 5️⃣ Cliente y Patente debajo a la izquierda
             Paragraph clienteInfo = new Paragraph();
             clienteInfo.add(new Paragraph("Cliente: " + presupuesto.getNombrePropietario(), normal));
             clienteInfo.add(new Paragraph("Patente: " + presupuesto.getPatente(), normal));
@@ -75,14 +64,12 @@ public class pdfServiceImp implements pdfService {
 
             document.add(new Paragraph("\n"));
 
-            // Línea divisoria
             LineSeparator separator = new LineSeparator();
             separator.setLineColor(BaseColor.LIGHT_GRAY);
             document.add(new Chunk(separator));
 
             document.add(new Paragraph("\n"));
 
-            // 6️⃣ Tabla con trabajo realizado
             PdfPTable trabajoTable = new PdfPTable(1);
             trabajoTable.setWidthPercentage(100);
 
@@ -103,7 +90,6 @@ public class pdfServiceImp implements pdfService {
             document.add(trabajoTable);
             document.add(new Paragraph("\n"));
 
-            // 7️⃣ Totales centrados
             double total = presupuesto.getTotal() != null ? presupuesto.getTotal() : 0;
             double subtotal = total / 1.21;
             double iva = total - subtotal;
@@ -116,7 +102,6 @@ public class pdfServiceImp implements pdfService {
             document.add(totales);
             document.add(new Paragraph("\n\n"));
 
-            // 8️⃣ Mensaje final
             Paragraph cierre = new Paragraph("¡Gracias por elegirnos!", subtitulo);
             cierre.setAlignment(Element.ALIGN_CENTER);
             document.add(cierre);

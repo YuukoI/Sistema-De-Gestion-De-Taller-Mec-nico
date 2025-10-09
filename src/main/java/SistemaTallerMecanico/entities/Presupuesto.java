@@ -7,10 +7,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.aspectj.bridge.IMessage;
-
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Data
@@ -28,14 +25,6 @@ public class Presupuesto {
     @NotBlank(message = "Debe ingresar el nombre del propietario del vehiculo")
     private String nombrePropietario;
 
-    @ManyToMany
-    @JoinTable(
-            name = "factura_repuestos",
-            joinColumns = @JoinColumn(name = "factura_id"),
-            inverseJoinColumns = @JoinColumn(name = "repuesto_id")
-    )
-    private List<Repuesto> repuestos;
-
     @NotNull(message = "Mano de obra no puede ser nulo")
     @Positive(message = "Mano de obra no puede ser negativo")
     private double manoDeObra;
@@ -52,12 +41,5 @@ public class Presupuesto {
     private String marca;
 
     private String modelo;
-
-    public void calcularPresupuestoTotal(){
-        double totalRepuestos = repuestos.stream()
-                .mapToDouble(Repuesto::getPrecio)
-                .sum();
-        this.total = totalRepuestos + manoDeObra;
-    }
 
 }

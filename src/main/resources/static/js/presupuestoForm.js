@@ -15,19 +15,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const token = localStorage.getItem("jwt");
     let username = null;
+    let esAdmin = false;
 
     if (token) {
         const decoded = parseJwt(token);
         username = decoded?.sub || decoded?.username || "Usuario";
+        esAdmin = decoded?.rol === "ADMIN";
+
         usernameBtn.textContent = username;
         logoutBtn.style.display = "block";
 
-        navMenu.innerHTML = `
-          <a href="vehiculos.html">Vehículos</a>
-          <a href="repuestos.html">Repuestos</a>
-          <a href="presupuestos.html">Presupuestos</a>
-          <a href="usuarios.html">Usuarios</a>
+        let navHtml = `
+            <a href="vehiculos.html">Vehículos</a>
+            <a href="repuestos.html">Repuestos</a>
+            <a href="presupuestos.html">Presupuestos</a>
         `;
+        if (esAdmin) {
+            navHtml += `<a href="usuarios.html">Usuarios</a>`;
+        }
+        navMenu.innerHTML = navHtml;
     } else {
         alert("Debes iniciar sesión");
         window.location.href = "../index.html";
@@ -70,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("descripcion").value = data.descripcion || "";
                 document.getElementById("total").value = data.total || "";
             })
-            .catch(err => alert("Error al cargar el presupuesto"));
+            .catch(() => alert("Error al cargar el presupuesto"));
     }
 
     presupuestoForm.addEventListener("submit", (e) => {
@@ -95,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         fetch(url, {
-            method: method,
+            method,
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
@@ -106,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!res.ok) throw new Error("Error al guardar el presupuesto");
                 window.location.href = "presupuestos.html";
             })
-            .catch(err => alert(err));
+            .catch(err => alert(err.message));
     });
 
     document.getElementById("cancelBtn").addEventListener("click", () => {

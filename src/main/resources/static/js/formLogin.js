@@ -26,6 +26,5 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
     localStorage.setItem("jwt", token);
 
-    alert("Login exitoso!");
     window.location.href = "../index.html";
 });

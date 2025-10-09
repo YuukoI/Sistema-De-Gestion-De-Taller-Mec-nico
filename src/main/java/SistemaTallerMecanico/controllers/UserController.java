@@ -32,17 +32,16 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Page<User>> search(
-            @RequestParam String username,
+            @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "username") String sortBy) {
-
+            @RequestParam(defaultValue = "15") int size,
+            @RequestParam(defaultValue = "id") String sortBy
+    ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        Page<User> users = userService.findByUsernameContainingIgnoreCase(username, pageable);
-        users.forEach(u -> u.setPassword(null));
-        return ResponseEntity.ok(users);
+        Page<User> resultado = userService.findByUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(keyword, pageable);
+        return ResponseEntity.ok(resultado);
     }
 
     @GetMapping("/{id}")

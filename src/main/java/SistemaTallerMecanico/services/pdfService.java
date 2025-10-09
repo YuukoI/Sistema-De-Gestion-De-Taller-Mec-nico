@@ -4,5 +4,5 @@ import SistemaTallerMecanico.entities.Presupuesto;
 
 public interface pdfService {
 
-    public byte[] generarReciboPdf(Presupuesto presupuesto);
+    byte[] generarReciboPdf(Presupuesto presupuesto);
 }

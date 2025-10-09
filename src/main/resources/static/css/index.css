@@ -1,6 +1,3 @@
-/* ============================
-   Reset y estructura base
-============================ */
 html, body {
     height: 100%;
     margin: 0;
@@ -16,9 +13,6 @@ body {
     background-size: cover;
 }
 
-/* ============================
-   Header
-============================ */
 header {
     display: flex;
     justify-content: space-between;
@@ -30,8 +24,14 @@ header {
 }
 
 .logo {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+    opacity: 0.8;
 }
 
 nav {
@@ -97,11 +97,8 @@ nav a:hover {
     background: #f0f0f0;
 }
 
-/* ============================
-   Main
-============================ */
 main {
-    flex: 1; /* Esto empuja el footer hacia abajo */
+    flex: 1;
     padding: 40px;
     text-align: center;
     background: rgba(255,255,255,0.85);
@@ -111,11 +108,8 @@ main {
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-/* ============================
-   Footer
-============================ */
 .footer {
-    background: rgba(44, 44, 44, 0.5); /* misma transparencia que header */
+    background: rgba(44, 44, 44, 0.5);
     color: white;
     padding: 10px 20px;
     font-size: 0.85rem;
@@ -123,18 +117,18 @@ main {
     justify-content: center;
     flex-wrap: wrap;
     gap: 20px;
-    align-items: center; /* esto alinea todos los íconos verticalmente */
+    align-items: center;
     line-height: 1.2;
 }
 
 .footer-item {
     display: flex;
-    align-items: center; /* alinea ícono + texto */
+    align-items: center;
     gap: 6px;
     margin-right: 350px;
 }
 .footer-item:last-child {
-    margin-right: 0; /* elimina margen extra del último */
+    margin-right: 0;
 }
 
 .footer i {
@@ -157,9 +151,6 @@ main {
     text-decoration: underline;
 }
 
-/* ============================
-   Responsivo
-============================ */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -193,6 +184,13 @@ main {
 @media (max-width: 480px) {
     .logo {
         font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .logo:hover {
+        opacity: 0.8;
     }
 
     nav {

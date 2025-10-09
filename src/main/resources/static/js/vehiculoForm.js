@@ -3,44 +3,47 @@ document.addEventListener("DOMContentLoaded", () => {
     const dropdown = document.getElementById("userDropdown");
     const logoutBtn = document.getElementById("logoutBtn");
     const navMenu = document.getElementById("navMenu");
+    const formTitle = document.getElementById("formTitle");
+    const vehiculoForm = document.getElementById("vehiculoForm");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const logo = document.querySelector(".logo");
+
+    const token = localStorage.getItem("jwt");
+
+    if (!token) {
+        alert("Debes iniciar sesión");
+        window.location.href = "../index.html";
+        return;
+    }
 
     function parseJwt(token) {
         try {
-            const payload = token.split('.')[1];
+            const payload = token.split(".")[1];
             return JSON.parse(atob(payload));
         } catch (e) {
             return null;
         }
     }
 
-    const token = localStorage.getItem("jwt");
-    let username = null;
+    const decoded = parseJwt(token);
+    const username = decoded?.sub || decoded?.username || "Usuario";
+    const role = decoded?.role || decoded?.rol || decoded?.roles?.[0] || "USER";
 
-    if (token) {
-        const decoded = parseJwt(token);
-        username = decoded?.sub || decoded?.username || "Usuario";
-        usernameBtn.textContent = username;
-        logoutBtn.style.display = "block";
+    usernameBtn.textContent = username;
+    logoutBtn.style.display = "block";
 
-        navMenu.innerHTML = `
-          <a href="vehiculos.html">Vehículos</a>
-          <a href="repuestos.html">Repuestos</a>
-          <a href="presupuestos.html">Presupuestos</a>
-          <a href="usuarios.html">Usuarios</a>
-        `;
-    } else {
-        alert("Debes iniciar sesión");
-        window.location.href = "../index.html";
-        return;
+    let navHtml = `
+        <a href="vehiculos.html">Vehículos</a>
+        <a href="repuestos.html">Repuestos</a>
+        <a href="presupuestos.html">Presupuestos</a>
+    `;
+    if (role === "ADMIN") {
+        navHtml += `<a href="usuarios.html">Usuarios</a>`;
     }
+    navMenu.innerHTML = navHtml;
 
     usernameBtn.addEventListener("click", () => {
         dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
-    });
-
-    logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("jwt");
-        window.location.reload();
     });
 
     document.addEventListener("click", (e) => {
@@ -49,17 +52,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("jwt");
+        window.location.href = "formLogin.html";
+    });
+
+    logo.addEventListener("click", () => {
+        window.location.href = "../index.html";
+    });
+
     const urlParams = new URLSearchParams(window.location.search);
     const vehiculoId = urlParams.get("id");
-    const formTitle = document.getElementById("formTitle");
-    const vehiculoForm = document.getElementById("vehiculoForm");
 
     if (vehiculoId) {
         formTitle.textContent = "Editar Vehículo";
         fetch(`/vehiculos/${vehiculoId}`, {
             headers: { "Authorization": `Bearer ${token}` }
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error("Error al cargar el vehículo");
+                return res.json();
+            })
             .then(data => {
                 document.getElementById("vehiculoId").value = data.id;
                 document.getElementById("patente").value = data.patente;
@@ -67,29 +80,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("modelo").value = data.modelo;
                 document.getElementById("dueno").value = data.nombrePropietario || "";
             })
-            .catch(err => alert("Error al cargar el vehículo"));
+            .catch(() => alert("Error al cargar el vehículo"));
     }
 
     vehiculoForm.addEventListener("submit", (e) => {
         e.preventDefault();
 
         const vehiculoData = {
-            patente: document.getElementById("patente").value,
-            marca: document.getElementById("marca").value,
-            modelo: document.getElementById("modelo").value,
-            nombrePropietario: document.getElementById("dueno").value
+            patente: document.getElementById("patente").value.trim(),
+            marca: document.getElementById("marca").value.trim(),
+            modelo: document.getElementById("modelo").value.trim(),
+            nombrePropietario: document.getElementById("dueno").value.trim()
         };
 
-        let method = "POST";
-        let url = "/vehiculos";
-
-        if (vehiculoId) {
-            method = "PUT";
-            url = `/vehiculos/${vehiculoId}`;
-        }
+        const method = vehiculoId ? "PUT" : "POST";
+        const url = vehiculoId ? `/vehiculos/${vehiculoId}` : "/vehiculos";
 
         fetch(url, {
-            method: method,
+            method,
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
@@ -98,20 +106,15 @@ document.addEventListener("DOMContentLoaded", () => {
         })
             .then(res => {
                 if (!res.ok) throw new Error("Error al guardar el vehículo");
+                return res.json();
+            })
+            .then(() => {
                 window.location.href = "vehiculos.html";
             })
-            .catch(err => alert(err));
+            .catch(err => alert(err.message));
     });
 
-    document.getElementById("cancelBtn").addEventListener("click", () => {
+    cancelBtn.addEventListener("click", () => {
         window.location.href = "vehiculos.html";
     });
 });
-
-document.addEventListener("DOMContentLoaded", () => {
-    const logo = document.querySelector(".logo");
-    logo.addEventListener("click", () => {
-        window.location.href = "../index.html";
-    });
-});
-

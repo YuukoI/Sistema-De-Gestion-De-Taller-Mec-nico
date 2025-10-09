@@ -61,7 +61,9 @@ body {
     border: none;
 }
 
-.btn-primary:hover { background-color: #0056b3; }
+.btn-primary:hover {
+    background-color: #0056b3;
+}
 
 .btn-secondary {
     background-color: #6c757d;
@@ -69,7 +71,9 @@ body {
     border: none;
 }
 
-.btn-secondary:hover { background-color: #5a6268; }
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
 
 header {
     display: flex;
@@ -80,9 +84,15 @@ header {
     color: white;
 }
 
-header .logo { font-size: 1.5rem; font-weight: bold; }
+header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
 
-nav { display: flex; gap: 55px; }
+nav {
+    display: flex;
+    gap: 55px;
+}
 
 header nav a {
     margin: 0 10px;
@@ -92,7 +102,9 @@ header nav a {
     font-size: 1.5rem;
 }
 
-header .user { position: relative; }
+header .user {
+    position: relative;
+}
 
 header #usernameBtn {
     background-color: #fbc531;
@@ -102,7 +114,9 @@ header #usernameBtn {
     cursor: pointer;
 }
 
-header #usernameBtn:hover { background-color: #e1a82d; }
+header #usernameBtn:hover {
+    background-color: #e1a82d;
+}
 
 header #userDropdown {
     display: none;
@@ -125,20 +139,69 @@ header #userDropdown button {
     text-align: left;
 }
 
-header #userDropdown button:hover { background-color: #f0f0f0; }
+header #userDropdown button:hover {
+    background-color: #f0f0f0;
+}
 
-header .logo { font-weight: bold; font-size: 1.5rem; cursor: pointer; }
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+    opacity: 0.8;
+}
 
 @media (max-width: 768px) {
-    header { flex-direction: column; align-items: flex-start; padding: 15px 20px; }
-    nav { flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-    .form-container { margin: 30px 20px; padding: 20px; }
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .form-container {
+        margin: 30px 20px;
+        padding: 20px;
+    }
 }
 
 @media (max-width: 480px) {
-    .logo { font-size: 1.2rem; }
-    nav { flex-direction: column; gap: 8px; width: 100%; }
-    nav a { padding: 8px 0; }
-    #usernameBtn { padding: 6px 12px; font-size: 0.9rem; }
-    .form-container { margin: 20px 15px; padding: 15px; }
+    .logo {
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .logo:hover {
+        opacity: 0.8;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    nav a {
+        padding: 8px 0;
+    }
+
+    #usernameBtn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    .form-container {
+        margin: 20px 15px;
+        padding: 15px;
+    }
 }

@@ -6,7 +6,7 @@ import SistemaTallerMecanico.auth.RegisterRequest;
 
 public interface AuthService {
 
-    public AuthResponse login(LoginRequest loginRequest);
+    AuthResponse login(LoginRequest loginRequest);
 
-    public AuthResponse register(RegisterRequest registerRequest);
+    AuthResponse register(RegisterRequest registerRequest);
 }

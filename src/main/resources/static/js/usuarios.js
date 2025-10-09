@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let paginaActual = 0;
     const tamañoPagina = 15;
     let totalPaginas = 0;
-    let userRole = null;
+    let esAdmin = false;
 
     const token = localStorage.getItem("jwt");
 
@@ -27,17 +27,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const decoded = parseJwt(token);
     const username = decoded?.sub || decoded?.username || "Usuario";
-    userRole = decoded?.sub || "USER"; // sub será "ADMIN" o "USER"
+    esAdmin = decoded?.rol === "ADMIN";
     usernameBtn.textContent = username;
     logoutBtn.style.display = "block";
 
-    // Navbar según rol
     let navHtml = `
         <a href="vehiculos.html">Vehículos</a>
         <a href="repuestos.html">Repuestos</a>
         <a href="presupuestos.html">Presupuestos</a>
     `;
-    if (userRole === "ADMIN") {
+    if (esAdmin) {
         navHtml += `<a href="usuarios.html">Usuarios</a>`;
     }
     navMenu.innerHTML = navHtml;
@@ -48,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("jwt");
-        window.location.reload();
+        window.location.href = "formLogin.html";
     });
 
     document.addEventListener("click", (e) => {
@@ -60,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cargarUsuarios = (filtro = "") => {
         let url = `/usuarios?page=${paginaActual}&size=${tamañoPagina}`;
         if (filtro) {
-            url = `/usuarios/search?username=${encodeURIComponent(filtro)}&page=${paginaActual}&size=${tamañoPagina}`;
+            url = `/usuarios/search?keyword=${encodeURIComponent(filtro)}&page=${paginaActual}&size=${tamañoPagina}`;
         }
 
         $.ajax({
@@ -77,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     usuarios.forEach(u => {
                         let acciones = "";
-                        if (userRole === "ADMIN") {
+                        if (esAdmin) {
                             acciones = `
                                 <button class="btn btn-sm btn-warning" onclick="editarUsuario(${u.id})">Editar</button>
                                 <button class="btn btn-sm btn-danger" onclick="borrarUsuario(${u.id})">Borrar</button>
@@ -113,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     window.borrarUsuario = (id) => {
-        if (userRole !== "ADMIN") return;
+        if (!esAdmin) return;
         if(confirm("¿Desea borrar este usuario?")) {
             $.ajax({
                 url: `/usuarios/${id}`,
@@ -126,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     window.editarUsuario = (id) => {
-        if (userRole !== "ADMIN") return;
+        if (!esAdmin) return;
         window.location.href = `usuariosForm.html?id=${id}`;
     };
 

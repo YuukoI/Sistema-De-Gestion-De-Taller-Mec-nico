@@ -27,11 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const decoded = parseJwt(token);
     const username = decoded?.sub || decoded?.username || "Usuario";
-    userRole = decoded?.sub || "USER"; // sub será "ADMIN" o "USER"
+    userRole = decoded?.rol || "USER";
     usernameBtn.textContent = username;
     logoutBtn.style.display = "block";
 
-    // Navbar según rol
     let navHtml = `
         <a href="vehiculos.html">Vehículos</a>
         <a href="repuestos.html">Repuestos</a>
@@ -48,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("jwt");
-        window.location.reload();
+        window.location.href = "formLogin.html";
     });
 
     document.addEventListener("click", (e) => {
@@ -57,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Mostrar o ocultar botón "Agregar" según rol
     if (userRole !== "ADMIN") {
         document.getElementById("agregarPresupuestoBtn").style.display = "none";
     }

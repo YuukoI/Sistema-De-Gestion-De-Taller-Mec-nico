@@ -4,7 +4,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface JwtService {
 
-    public String getToken(UserDetails userDetails);
+    String getToken(UserDetails userDetails);
 
     String getUsernameFromToken(String token);
 

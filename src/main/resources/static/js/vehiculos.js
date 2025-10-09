@@ -7,54 +7,48 @@ document.addEventListener("DOMContentLoaded", () => {
     let paginaActual = 0;
     const tamañoPagina = 15;
     let totalPaginas = 0;
-    let userRole = null;
+    let userRole = "USER";
+
+    const token = localStorage.getItem("jwt");
 
     function parseJwt(token) {
         try {
-            const payload = token.split('.')[1];
-            return JSON.parse(atob(payload));
+            return JSON.parse(atob(token.split('.')[1]));
         } catch (e) {
             return null;
         }
     }
 
-    const token = localStorage.getItem("jwt");
-    let username = null;
-
-    if (token) {
-        const decoded = parseJwt(token);
-        username = decoded?.sub || decoded?.username || "Usuario";
-        userRole = decoded?.sub || "USER"; // sub será "ADMIN" o "USER"
-        usernameBtn.textContent = username;
-        logoutBtn.style.display = "block";
-
-        navMenu.innerHTML = `
-          <a href="vehiculos.html">Vehículos</a>
-          <a href="repuestos.html">Repuestos</a>
-          <a href="presupuestos.html">Presupuestos</a>
-          <a href="usuarios.html">Usuarios</a>
-        `;
-    } else {
-        usernameBtn.textContent = "Acceder";
-        logoutBtn.style.display = "none";
-        navMenu.innerHTML = "";
+    if (!token) {
         alert("Debes iniciar sesión");
         window.location.href = "../index.html";
         return;
     }
 
+    const decoded = parseJwt(token);
+    const username = decoded?.sub || "Usuario";
+    userRole = decoded?.rol || "USER";
+
+    usernameBtn.textContent = username;
+    logoutBtn.style.display = "block";
+
+    let navHtml = `
+        <a href="vehiculos.html">Vehículos</a>
+        <a href="repuestos.html">Repuestos</a>
+        <a href="presupuestos.html">Presupuestos</a>
+    `;
+    if (userRole === "ADMIN") {
+        navHtml += `<a href="usuarios.html">Usuarios</a>`;
+    }
+    navMenu.innerHTML = navHtml;
+
     usernameBtn.addEventListener("click", () => {
-        if (username) {
-            dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
-        } else {
-            window.location.href = "html/formLogin.html";
-        }
+        dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
     });
 
     logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("jwt");
-        localStorage.removeItem("username");
-        window.location.reload();
+        window.location.href = "formLogin.html";
     });
 
     document.addEventListener("click", (e) => {
@@ -108,8 +102,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 $("#nextBtn").prop("disabled", data.last);
             },
             error: function(err) {
-                alert("Error al cargar vehículos");
-                console.error(err);
+                if (err.status === 403) {
+                    alert("No autorizado. Por favor, inicia sesión nuevamente.");
+                    localStorage.removeItem("jwt");
+                    window.location.href = "../index.html";
+                } else {
+                    alert("Error al cargar vehículos");
+                    console.error(err);
+                }
             }
         });
     };
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (userRole === "ADMIN") {
-        $("#agregarVehiculoBtn").click(() => {
+        $("#agregarVehiculoBtn").show().click(() => {
             window.location.href = "vehiculoForm.html";
         });
     } else {
@@ -160,9 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     cargarVehiculos();
-});
 
-document.addEventListener("DOMContentLoaded", () => {
     const logo = document.querySelector(".logo");
     logo.addEventListener("click", () => {
         window.location.href = "../index.html";

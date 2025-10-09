@@ -4,16 +4,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutBtn = document.getElementById("logoutBtn");
     const navMenu = document.getElementById("navMenu");
 
+    let userRole = null;
+    const token = localStorage.getItem("jwt");
+
     function parseJwt(token) {
         try {
-            const payload = token.split('.')[1];
-            return JSON.parse(atob(payload));
-        } catch {
+            return JSON.parse(atob(token.split('.')[1]));
+        } catch (e) {
             return null;
         }
     }
 
-    const token = localStorage.getItem("jwt");
     if (!token) {
         alert("Debes iniciar sesión");
         window.location.href = "../index.html";
@@ -22,15 +23,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const decoded = parseJwt(token);
     const username = decoded?.sub || decoded?.username || "Usuario";
+    userRole = decoded?.rol || "USER";
+
     usernameBtn.textContent = username;
     logoutBtn.style.display = "block";
 
-    navMenu.innerHTML = `
+    let navHtml = `
         <a href="vehiculos.html">Vehículos</a>
         <a href="repuestos.html">Repuestos</a>
         <a href="presupuestos.html">Presupuestos</a>
-        <a href="usuarios.html">Usuarios</a>
     `;
+    if (userRole === "ADMIN") {
+        navHtml += `<a href="usuarios.html">Usuarios</a>`;
+    }
+    navMenu.innerHTML = navHtml;
 
     usernameBtn.addEventListener("click", () => {
         dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
@@ -38,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("jwt");
-        window.location.reload();
+        window.location.href = "formLogin.html";
     });
 
     document.addEventListener("click", (e) => {
@@ -47,7 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Obtener id del usuario a editar
     const urlParams = new URLSearchParams(window.location.search);
     const usuarioId = urlParams.get("id");
     const formTitle = document.getElementById("formTitle");
@@ -59,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Cargar datos del usuario
     fetch(`/usuarios/${usuarioId}`, {
         headers: { "Authorization": `Bearer ${token}` }
     })
@@ -75,12 +79,20 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("lastName").value = data.lastName || "";
             document.getElementById("country").value = data.country || "";
             document.getElementById("role").value = data.role;
+
+            if (userRole !== "ADMIN") {
+                document.getElementById("role").disabled = true;
+            }
         })
         .catch(err => alert(err));
 
-    // Guardar cambios
     usuarioForm.addEventListener("submit", (e) => {
         e.preventDefault();
+
+        if (userRole !== "ADMIN") {
+            alert("No tienes permisos para editar usuarios");
+            return;
+        }
 
         const updatedUser = {
             username: document.getElementById("username").value,

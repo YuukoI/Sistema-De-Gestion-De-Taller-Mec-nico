@@ -6,10 +6,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +27,17 @@ public class JwtServiceImp implements JwtService {
     }
 
     private String getToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        String rol = userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority) // devuelve "ROLE_ADMIN" o "ROLE_USER"
+                .orElse("ROLE_USER");
+
+        if (rol.startsWith("ROLE_")) {
+            rol = rol.substring(5);
+        }
+
+        extraClaims.put("rol", rol);
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

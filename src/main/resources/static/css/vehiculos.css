@@ -4,6 +4,14 @@ body {
     color: #2f3640;
     background: url("../images/fondo.jpg") no-repeat center center fixed;
     background-size: cover;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
 }
 
 header {
@@ -16,9 +24,21 @@ header {
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
-.logo { font-size: 1.5rem; font-weight: bold; }
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
 
-nav { display: flex; gap: 55px; }
+.logo:hover {
+    opacity: 0.8;
+}
+
+nav {
+    display: flex;
+    gap: 55px;
+}
 
 nav a {
     margin: 0 10px;
@@ -29,9 +49,13 @@ nav a {
     transition: 0.2s;
 }
 
-nav a:hover { color: #fbc531; }
+nav a:hover {
+    color: #fbc531;
+}
 
-.user { position: relative; }
+.user {
+    position: relative;
+}
 
 #usernameBtn {
     background: #fbc531;
@@ -43,7 +67,9 @@ nav a:hover { color: #fbc531; }
     transition: 0.2s;
 }
 
-#usernameBtn:hover { background: #e1a82d; }
+#usernameBtn:hover {
+    background: #e1a82d;
+}
 
 .dropdown {
     display: none;
@@ -55,7 +81,6 @@ nav a:hover { color: #fbc531; }
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    left: auto;
     z-index: 1000;
 }
 
@@ -68,35 +93,113 @@ nav a:hover { color: #fbc531; }
     text-align: left;
 }
 
-.dropdown button:hover { background: #f0f0f0; }
+.dropdown button:hover {
+    background: #f0f0f0;
+}
 
-.pagina-label {
-    font-weight: bold;
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#searchFiltro {
+    max-width: 400px;
+}
+
+#agregarVehiculoBtn {
+    height: 38px;
+}
+
+.footer {
+    background: rgba(44, 44, 44, 0.5);
     color: white;
-    padding: 0;
-    background: transparent;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: center;
+    line-height: 1.2;
 }
 
-header .logo {
-    font-weight: bold;
-    font-size: 1.5rem;
+.footer-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 350px;
+}
+.footer-item:last-child {
+    margin-right: 0; /
+}
+
+.footer-btn {
+    background: none;
+    border: none;
+    color: white;
     cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+    text-align: left;
 }
 
-.table th, .table td { text-align: center; vertical-align: middle; }
+.footer-btn:hover {
+    color: #fbc531;
+    text-decoration: underline;
+}
 
-#searchFiltro { max-width: 400px; }
-
-#agregarVehiculoBtn { height: 38px; }
+.footer i {
+    font-size: 1.1rem;
+    line-height: 1;
+}
 
 @media (max-width: 768px) {
-    header { flex-direction: column; align-items: flex-start; padding: 15px 20px; }
-    nav { flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 10px 15px;
+        gap: 12px;
+    }
 }
 
 @media (max-width: 480px) {
-    .logo { font-size: 1.2rem; }
-    nav { flex-direction: column; gap: 8px; width: 100%; }
-    nav a { padding: 8px 0; }
-    #usernameBtn { padding: 6px 12px; font-size: 0.9rem; }
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    nav a {
+        padding: 8px 0;
+    }
+
+    #usernameBtn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    .footer-item i {
+        font-size: 0.9rem;
+    }
+
+    .footer-btn {
+        font-size: 0.8rem;
+    }
+
 }
