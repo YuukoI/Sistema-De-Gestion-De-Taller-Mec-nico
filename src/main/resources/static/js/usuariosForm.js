@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+
     if (!token) {
         alert("Debes iniciar sesión");
         window.location.href = "../index.html";
@@ -35,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
     if (userRole === "ADMIN") {
         navHtml += `<a href="usuarios.html">Usuarios</a>`;
+        navHtml += `<a href="logs.html">Auditoría</a>`;
     }
     navMenu.innerHTML = navHtml;
 

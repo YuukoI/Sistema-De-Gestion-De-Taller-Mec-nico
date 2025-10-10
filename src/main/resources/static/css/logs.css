@@ -4,7 +4,6 @@ body {
     color: #2f3640;
     background: url("../images/fondo.jpg") no-repeat center center fixed;
     background-size: cover;
-
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -19,7 +18,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    background: rgba(44, 44, 44, 0.5);
+    background: rgba(44,44,44,0.5);
     color: white;
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
@@ -28,7 +27,6 @@ header {
     font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
-    transition: opacity 0.2s ease;
 }
 
 .logo:hover {
@@ -64,6 +62,7 @@ nav a:hover {
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
+    transition: 0.2s;
 }
 
 #usernameBtn:hover {
@@ -80,29 +79,29 @@ nav a:hover {
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    z-index: 1000;
 }
 
 .dropdown button {
     background: none;
     border: none;
     padding: 10px 20px;
-    cursor: pointer;
     width: 100%;
     text-align: left;
+    cursor: pointer;
 }
 
 .dropdown button:hover {
     background: #f0f0f0;
 }
 
-#searchFiltro {
-    max-width: 400px;
-}
-
 .table th, .table td {
     text-align: center;
     vertical-align: middle;
+    min-width: 110px;
+}
+
+#searchInput {
+    max-width: 400px;
 }
 
 .footer {
@@ -124,9 +123,13 @@ nav a:hover {
     gap: 6px;
     margin-right: 350px;
 }
-
 .footer-item:last-child {
     margin-right: 0;
+}
+
+.footer i {
+    font-size: 1.1rem;
+    line-height: 1;
 }
 
 .footer-btn {
@@ -142,11 +145,6 @@ nav a:hover {
 .footer-btn:hover {
     color: #fbc531;
     text-decoration: underline;
-}
-
-.footer i {
-    font-size: 1.1rem;
-    line-height: 1;
 }
 
 @media (max-width: 768px) {
@@ -173,46 +171,4 @@ nav a:hover {
         padding: 10px 15px;
         gap: 12px;
     }
-
-    .footer-item {
-        margin-right: 0;
-    }
-
-}
-
-@media (max-width: 480px) {
-    .logo {
-        font-size: 1.2rem;
-        font-weight: bold;
-        cursor: pointer;
-        transition: opacity 0.2s ease;
-    }
-
-    .logo:hover {
-        opacity: 0.8;
-    }
-
-    nav {
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-    }
-
-    nav a {
-        padding: 8px 0;
-    }
-
-    #usernameBtn {
-        padding: 6px 12px;
-        font-size: 0.9rem;
-    }
-
-    .footer-item i {
-        font-size: 0.9rem;
-    }
-
-    .footer-btn {
-        font-size: 0.8rem;
-    }
-
 }

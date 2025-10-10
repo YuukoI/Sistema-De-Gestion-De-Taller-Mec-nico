@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
     if (role === "ADMIN") {
         navHtml += `<a href="usuarios.html">Usuarios</a>`;
+        navHtml += `<a href="logs.html">Auditoría</a>`;
     }
     navMenu.innerHTML = navHtml;
 
