@@ -22,8 +22,12 @@ public class Vehiculo {
     @NotBlank(message = "El propietario no puede ser nulo")
     private String nombrePropietario;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String marca;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String modelo;
 
 }

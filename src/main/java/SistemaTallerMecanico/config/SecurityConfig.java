@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 "/", "/index.html", "/html/formLogin.html", "/html/formRegister.html",
                                 "/css/**", "/js/**", "/images/**","/html/**"
                         ).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().hasAnyRole("USER", "ADMIN")
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

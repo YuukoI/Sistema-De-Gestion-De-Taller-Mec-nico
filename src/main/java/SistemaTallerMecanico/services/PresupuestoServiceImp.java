@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @Service
@@ -53,5 +55,33 @@ public class PresupuestoServiceImp implements PresupuestoService {
     @Override
     public Page<Presupuesto> findByPatenteContainingIgnoreCaseOrNombrePropietarioContainingIgnoreCase(String filtro, Pageable pageable) {
         return presupuestoRepository.findByPatenteContainingIgnoreCaseOrNombrePropietarioContainingIgnoreCase(filtro, filtro, pageable);
+    }
+
+    @Override
+    public long contarPresupuestosSemana() {
+        LocalDate inicioSemana = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
+        LocalDate finSemana = LocalDate.now().with(java.time.DayOfWeek.SUNDAY);
+        return presupuestoRepository.contarPorFecha(inicioSemana, finSemana);
+    }
+
+    @Override
+    public long contarPresupuestosMes() {
+        LocalDate inicioMes = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate finMes = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+        return presupuestoRepository.contarPorFecha(inicioMes, finMes);
+    }
+
+    @Override
+    public Double ingresosSemana() {
+        LocalDate inicioSemana = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
+        LocalDate finSemana = LocalDate.now().with(java.time.DayOfWeek.SUNDAY);
+        return presupuestoRepository.sumarTotalPorFecha(inicioSemana, finSemana);
+    }
+
+    @Override
+    public Double ingresosMes() {
+        LocalDate inicioMes = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate finMes = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+        return presupuestoRepository.sumarTotalPorFecha(inicioMes, finMes);
     }
 }

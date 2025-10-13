@@ -1,5 +1,6 @@
 package SistemaTallerMecanico.services;
 
+import SistemaTallerMecanico.entities.Role;
 import SistemaTallerMecanico.entities.User;
 import SistemaTallerMecanico.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,18 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public Page<User> findByUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String keyword, Pageable pageable) {
-        return userRepository.findByUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(keyword, keyword, keyword, pageable);
+    public Page<User> searchByUsernameOrRole(String keyword, Pageable pageable) {
+        Role role = null;
+        try {
+            role = Role.valueOf(keyword.toUpperCase());
+        } catch (IllegalArgumentException e) {
+        }
+        return userRepository.findByUsernameContainingIgnoreCaseOrRole(keyword, role, pageable);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 
     @Override

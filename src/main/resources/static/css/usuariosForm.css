@@ -1,26 +1,36 @@
-body {
-    font-family: Arial, sans-serif;
+html, body {
+    height: 100%;
     margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
     color: #2f3640;
-    padding: 0;
     background: url("../images/fondo.jpg") no-repeat center center fixed;
     background-size: cover;
 }
 
+main {
+    flex: 1;
+}
+
 .form-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     margin: 50px auto;
     background-color: #fff;
-    padding: 20px;
+    padding: 25px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 #formTitle {
     text-align: center;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .form-group {
@@ -32,28 +42,19 @@ body {
     color: #555;
 }
 
-.form-control {
+.form-control, select {
     border-radius: 5px;
     border: 1px solid #ccc;
     padding: 10px;
     width: 100%;
     box-sizing: border-box;
-}
-
-.form-group select {
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-    cursor: pointer;
 }
 
 .form-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    flex-wrap: wrap;
+    margin-top: 15px;
 }
 
 .btn {
@@ -89,13 +90,16 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    background: rgba(44, 44, 44, 0.5);
+    background: rgba(20, 20, 20, 0.8);
     color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    backdrop-filter: blur(6px);
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #fbc531;
     cursor: pointer;
     transition: opacity 0.2s ease;
 }
@@ -106,15 +110,19 @@ header {
 
 nav {
     display: flex;
-    gap: 55px;
+    gap: 70px;
 }
 
-header nav a {
-    margin: 0 10px;
-    color: white;
+nav a {
+    color: #ddd;
     text-decoration: none;
+    transition: 0.2s;
     font-weight: 500;
     font-size: 1.5rem;
+}
+
+nav a:hover {
+    color: #fbc531;
 }
 
 header .user {
@@ -158,18 +166,64 @@ header #userDropdown button:hover {
     background-color: #f0f0f0;
 }
 
-@media screen and (max-width: 768px) {
+footer {
+    background: rgba(20, 20, 20, 0.8);
+    color: white;
+    padding: 15px 20px;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(6px);
+}
+
+.footer-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 350px;
+}
+
+.footer i {
+    color: #fbc531;
+}
+
+.footer-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.footer-item:last-child {
+    margin-right: 0;
+}
+
+.footer-btn:hover {
+    color: #fbc531;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
     .form-container {
-        margin: 20px;
-        padding: 15px;
-    }
-
-    header nav {
-        gap: 15px;
-    }
-
-    header nav a {
-        font-size: 1.1rem;
+        margin: 30px 20px;
+        padding: 20px;
     }
 
     .form-actions {
@@ -178,19 +232,16 @@ header #userDropdown button:hover {
     }
 }
 
-@media screen and (max-width: 480px) {
+@media (max-width: 480px) {
     header {
         flex-direction: column;
         align-items: flex-start;
+        padding: 15px 20px;
+    }
+
+    nav {
+        flex-wrap: wrap;
         gap: 10px;
-    }
-
-    .form-container {
-        width: 95%;
-        padding: 10px;
-    }
-
-    header nav a {
-        font-size: 1rem;
+        margin-top: 10px;
     }
 }

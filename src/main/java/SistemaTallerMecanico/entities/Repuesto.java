@@ -1,9 +1,6 @@
 package SistemaTallerMecanico.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -24,6 +21,8 @@ public class Repuesto {
     @NotBlank(message = "El nombre no puede ser nulo")
     private String nombre;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String descripcion;
 
     @NotNull(message = "El stock no puede ser nulo")

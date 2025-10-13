@@ -95,26 +95,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 tbody.empty();
 
                 repuestos.forEach(r => {
+                    const descripcionCorta = r.descripcion ? (r.descripcion.length > 100 ? r.descripcion.substring(0, 100) + '...' : r.descripcion) : "";
+                    const descripcionCompleta = r.descripcion || "";
                     tbody.append(`
-                        <tr>
-                            <td>${r.id}</td>
-                            <td>${r.nombre}</td>
-                            <td>${r.descripcion}</td>
-                            <td>
-                                ${esAdmin ? `
-                                    <button class="btn btn-sm btn-outline-danger" onclick="cambiarStock(${r.id}, ${r.stock - 1})">-</button>
-                                    <span style="margin: 0 8px; font-weight: bold;">${r.stock}</span>
-                                    <button class="btn btn-sm btn-outline-success" onclick="cambiarStock(${r.id}, ${r.stock + 1})">+</button>
-                                ` : r.stock}
-                            </td>
-                            <td>${r.precio}</td>
-                            <td>
-                                ${esAdmin ? `
-                                    <button class="btn btn-sm btn-warning" onclick="editarRepuesto(${r.id})">Editar</button>
-                                    <button class="btn btn-sm btn-danger" onclick="borrarRepuesto(${r.id})">Borrar</button>
-                                ` : ''}
-                            </td>
-                        </tr>
+<tr>
+    <td>${r.id}</td>
+    <td class="nombre" title="${r.nombre}">${r.nombre}</td>
+    <td class="descripcion" onclick="mostrarDescripcion('${descripcionCompleta.replace(/'/g, "\\'")}')" title="Haz clic para ver completa">
+        ${descripcionCorta}
+    </td>
+    <td>
+        ${esAdmin ? `
+            <button class="btn btn-sm btn-outline-danger" onclick="cambiarStock(${r.id}, ${r.stock - 1})">-</button>
+            <span style="margin: 0 8px; font-weight: bold;">${r.stock}</span>
+            <button class="btn btn-sm btn-outline-success" onclick="cambiarStock(${r.id}, ${r.stock + 1})">+</button>
+        ` : r.stock}
+    </td>
+    <td>${r.precio.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+    <td class="acciones">
+        ${esAdmin ? `
+            <button class="btn btn-sm btn-warning" onclick="editarRepuesto(${r.id})">Editar</button>
+            <button class="btn btn-sm btn-danger" onclick="borrarRepuesto(${r.id})">Borrar</button>
+        ` : '-'}
+       
+    </td>
+</tr>
                     `);
                 });
 
@@ -189,3 +194,19 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "../index.html";
     });
 });
+
+function mostrarDescripcion(texto) {
+    document.getElementById('descText').textContent = texto;
+    document.getElementById('descModal').style.display = 'flex';
+}
+
+function cerrarModal() {
+    document.getElementById('descModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('descModal');
+    if (event.target === modal) {
+        cerrarModal();
+    }
+};

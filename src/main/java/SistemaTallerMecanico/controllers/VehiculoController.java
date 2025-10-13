@@ -27,7 +27,7 @@ public class VehiculoController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Page<Vehiculo>> findAllPaged(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "15") int size,
             @RequestParam(defaultValue = "id") String sortBy)
     {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
@@ -104,7 +104,7 @@ public class VehiculoController {
     public ResponseEntity<Page<Vehiculo>> search(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "15") int size,
             @RequestParam(defaultValue = "id") String sortBy
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));

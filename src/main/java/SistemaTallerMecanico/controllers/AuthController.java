@@ -4,6 +4,7 @@ import SistemaTallerMecanico.auth.AuthResponse;
 import SistemaTallerMecanico.auth.LoginRequest;
 import SistemaTallerMecanico.auth.RegisterRequest;
 import SistemaTallerMecanico.services.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         return ResponseEntity.ok(authService.register(registerRequest));
     }
 }

@@ -23,4 +23,13 @@ public interface PresupuestoService {
     List<Presupuesto> findPresupuestoByVehiculoNombrePropietario(String nombrePropietario);
 
     Page<Presupuesto> findByPatenteContainingIgnoreCaseOrNombrePropietarioContainingIgnoreCase(String filtro, Pageable pageable);
+
+    public long contarPresupuestosSemana();
+
+    public long contarPresupuestosMes();
+
+    public Double ingresosSemana();
+
+    public Double ingresosMes();
+
 }

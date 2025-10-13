@@ -1,5 +1,6 @@
 package SistemaTallerMecanico.controllers;
 
+import SistemaTallerMecanico.dtos.UserDTO;
 import SistemaTallerMecanico.entities.User;
 import SistemaTallerMecanico.services.UserService;
 import lombok.AllArgsConstructor;
@@ -7,9 +8,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -22,8 +26,8 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<User>> findAllPaged(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "username") String sortBy) {
+            @RequestParam(defaultValue = "15") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         Page<User> users = userService.findAllPaged(pageable);
@@ -40,7 +44,7 @@ public class UserController {
             @RequestParam(defaultValue = "id") String sortBy
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        Page<User> resultado = userService.findByUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(keyword, pageable);
+        Page<User> resultado = userService.searchByUsernameOrRole(keyword, pageable);
         return ResponseEntity.ok(resultado);
     }
 
@@ -57,21 +61,34 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO updatedUser) {
         User user = userService.findById(id).orElse(null);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
+        if (user == null) return ResponseEntity.notFound().build();
+
+        if (updatedUser.getUsername() != null && !updatedUser.getUsername().isEmpty()) {
+            Optional<User> existingUser = userService.findByUsername(updatedUser.getUsername());
+            if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
         }
 
-        if (updatedUser.getUsername() != null) user.setUsername(updatedUser.getUsername());
-        if (updatedUser.getFirstName() != null) user.setFirstName(updatedUser.getFirstName());
-        if (updatedUser.getLastName() != null) user.setLastName(updatedUser.getLastName());
-        if (updatedUser.getCountry() != null) user.setCountry(updatedUser.getCountry());
-        if (updatedUser.getRole() != null) user.setRole(updatedUser.getRole());
+        user.setUsername(updatedUser.getUsername());
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+        user.setCountry(updatedUser.getCountry());
+        user.setRole(updatedUser.getRole());
 
-        userService.save(user);
-        user.setPassword(null);
-        return ResponseEntity.ok(user);
+        User savedUser = userService.save(user);
+
+        UserDTO response = new UserDTO(
+                savedUser.getUsername(),
+                savedUser.getFirstName(),
+                savedUser.getLastName(),
+                savedUser.getCountry(),
+                savedUser.getRole()
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
@@ -84,6 +101,5 @@ public class UserController {
         userService.deleteById(id);
         return ResponseEntity.ok().build();
     }
-
 }
 

@@ -38,7 +38,7 @@ public class PresupuestoController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Page<Presupuesto>> findAllPaged(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "15") int size,
             @RequestParam(defaultValue = "id") String sortBy )
     {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
@@ -118,6 +118,18 @@ public class PresupuestoController {
             return ResponseEntity.notFound().build();
         }
 
+        Vehiculo vehiculo = vehiculoService.findByPatente(presupuestoDTO.getPatente());
+
+        if(vehiculo == null){
+            vehiculo = new Vehiculo();
+            vehiculo.setPatente(presupuestoDTO.getPatente());
+            vehiculo.setModelo(presupuestoDTO.getModelo());
+            vehiculo.setMarca(presupuestoDTO.getMarca());
+            vehiculo.setNombrePropietario(presupuestoDTO.getNombrePropietario());
+
+            vehiculoService.save(vehiculo);
+        }
+
         presupuesto.setPatente(presupuestoDTO.getPatente());
         presupuesto.setNombrePropietario(presupuestoDTO.getNombrePropietario());
         presupuesto.setManoDeObra(presupuestoDTO.getManoDeObra());
@@ -134,7 +146,7 @@ public class PresupuestoController {
     public ResponseEntity<Page<Presupuesto>> search(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "15") int size,
             @RequestParam(defaultValue = "id") String sortBy
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
@@ -155,5 +167,31 @@ public class PresupuestoController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=presupuesto_" + id + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
+    }
+
+    @GetMapping("/resumen")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<Map<String, Long>> resumenPresupuestos() {
+        long semana = presupuestoService.contarPresupuestosSemana();
+        long mes = presupuestoService.contarPresupuestosMes();
+
+        Map<String, Long> resumen = new HashMap<>();
+        resumen.put("semana", semana);
+        resumen.put("mes", mes);
+
+        return ResponseEntity.ok(resumen);
+    }
+
+    @GetMapping("/ingresos")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<Map<String, Double>> ingresos() {
+        Double semana = presupuestoService.ingresosSemana();
+        Double mes = presupuestoService.ingresosMes();
+
+        Map<String, Double> ingresos = new HashMap<>();
+        ingresos.put("semana", semana);
+        ingresos.put("mes", mes);
+
+        return ResponseEntity.ok(ingresos);
     }
 }

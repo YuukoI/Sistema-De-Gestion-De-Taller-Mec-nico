@@ -1,3 +1,14 @@
+function cerrarModal() {
+    document.getElementById('modeloModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('modeloModal');
+    if (event.target === modal) {
+        cerrarModal();
+    }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     const usernameBtn = document.getElementById("usernameBtn");
     const dropdown = document.getElementById("userDropdown");
@@ -83,15 +94,21 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <button class="btn btn-sm btn-warning" onclick="editarVehiculo(${v.id})">Editar</button>
                                 <button class="btn btn-sm btn-danger" onclick="borrarVehiculo(${v.id})">Borrar</button>
                             `;
+                        } else {
+                            acciones = "-";
                         }
+
+
                         tbody.append(`
                             <tr>
-                                <td>${v.id}</td>
-                                <td>${v.patente}</td>
-                                <td>${v.marca || ""}</td>
-                                <td>${v.modelo || ""}</td>
-                                <td>${v.nombrePropietario || ""}</td>
-                                <td>${acciones}</td>
+                                <td class="id" title="${v.id}">${v.id}</td>
+                                <td class="patente" title="${v.patente}">${v.patente}</td>
+                                <td class="marca" title="${v.marca || ''}">${v.marca || ''}</td>
+                                <td class="modelo modeloCell" title="${v.modelo || ''}">
+                                    ${v.modelo && v.modelo.length > 40 ? v.modelo.substring(0, 40) + "..." : v.modelo || ''}
+                                </td>
+                                <td class="nombrePropietario" title="${v.nombrePropietario || ''}">${v.nombrePropietario || ''}</td>
+                                <td class="acciones">${acciones}</td>
                             </tr>
                         `);
                     });
@@ -101,6 +118,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 $("#paginaActual").text(`Página ${data.number + 1} de ${totalPaginas}`);
                 $("#prevBtn").prop("disabled", data.first);
                 $("#nextBtn").prop("disabled", data.last);
+
+                const modal = document.getElementById("modeloModal");
+                const modeloTexto = document.getElementById("modeloTexto");
+                const closeBtn = modal.querySelector(".close-btn");
+
+                $(".modeloCell").css("cursor", "pointer").on("click", function() {
+                    modeloTexto.textContent = $(this).attr("title");
+                    modal.style.display = "flex";
+                });
+
+                closeBtn.onclick = () => cerrarModal();
             },
             error: function(err) {
                 if (err.status === 403) {

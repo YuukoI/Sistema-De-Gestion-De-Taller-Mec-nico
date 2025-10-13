@@ -24,37 +24,32 @@ document.addEventListener("DOMContentLoaded", () => {
     if (token) {
         const decoded = parseJwt(token);
         username = decoded?.sub || decoded?.username || "Usuario";
+        esAdmin = decoded?.rol === "ADMIN";
+
+        if (!esAdmin) {
+            alert("No tienes permisos para acceder a esta página");
+            window.location.href = "../index.html";
+            return;
+        }
+
         usernameBtn.textContent = username;
         logoutBtn.style.display = "block";
 
-        esAdmin = decoded?.rol === "ADMIN";
-
-        let navHtml = `
+        navMenu.innerHTML = `
             <a href="vehiculos.html">Vehículos</a>
             <a href="repuestos.html">Repuestos</a>
             <a href="presupuestos.html">Presupuestos</a>
+            <a href="usuarios.html">Usuarios</a>
+            <a href="logs.html">Auditoría</a>
         `;
-        if (esAdmin) {
-            navHtml += `<a href="usuarios.html">Usuarios</a>`;
-            navHtml += `<a href="logs.html">Auditoría</a>`;
-        }
-        navMenu.innerHTML = navHtml;
-
     } else {
-        usernameBtn.textContent = "Acceder";
-        logoutBtn.style.display = "none";
-        navMenu.innerHTML = "";
         alert("Debes iniciar sesión");
         window.location.href = "../index.html";
         return;
     }
 
     usernameBtn.addEventListener("click", () => {
-        if (username) {
-            dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
-        } else {
-            window.location.href = "formLogin.html";
-        }
+        dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
     });
 
     logoutBtn.addEventListener("click", () => {
@@ -70,9 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const cargarLogs = (filtro = "") => {
         let url = `/logs?page=${paginaActual}&size=${tamañoPagina}`;
-        if (filtro) {
-            url = `/logs/search?query=${filtro}&page=${paginaActual}&size=${tamañoPagina}`;
-        }
+        if (filtro) url = `/logs/search?query=${encodeURIComponent(filtro)}&page=${paginaActual}&size=${tamañoPagina}`;
 
         $.ajax({
             url: url,
@@ -84,16 +77,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 tbody.empty();
 
                 logs.forEach(log => {
-                    tbody.append(`
+                    const detallesCortos = log.details ? (log.details.length > 50 ? log.details.substring(0,50) + '…' : log.details) : '';
+                    const fila = $(`
                         <tr>
                             <td>${log.id}</td>
                             <td>${log.username}</td>
                             <td>${log.action}</td>
                             <td>${log.method}</td>
-                            <td>${log.details || ''}</td>
+                            <td class="details-cell" title="Haz clic para ver completo">${detallesCortos}</td>
                             <td>${log.fecha ? new Date(log.fecha).toLocaleString() : ''}</td>
                         </tr>
                     `);
+                    fila.find('.details-cell').css('cursor', 'pointer').on('click', () => mostrarDetalles(log.details || ''));
+                    tbody.append(fila);
                 });
 
                 totalPaginas = data.totalPages || 1;
@@ -127,11 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    const logo = document.querySelector(".logo");
-    logo.addEventListener("click", () => {
-        window.location.href = "../index.html";
-    });
-
     const deleteAllLogs = () => {
         if (!confirm("¿Seguro que quieres borrar todos los logs? Esta acción no se puede deshacer.")) return;
 
@@ -149,5 +140,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $("#deleteAllLogsBtn").click(deleteAllLogs);
 
+    const logo = document.querySelector(".logo");
+    logo.addEventListener("click", () => {
+        window.location.href = "../index.html";
+    });
+
     cargarLogs();
 });
+
+function mostrarDetalles(texto) {
+    document.getElementById('descText').textContent = texto;
+    document.getElementById('descModal').style.display = 'flex';
+}
+
+function cerrarModal() {
+    document.getElementById('descModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('descModal');
+    if (event.target === modal) cerrarModal();
+};

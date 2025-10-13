@@ -28,19 +28,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const decoded = parseJwt(token);
     const username = decoded?.sub || decoded?.username || "Usuario";
     esAdmin = decoded?.rol === "ADMIN";
+
+    if (!esAdmin) {
+        alert("No tienes permisos para acceder a esta página");
+        window.location.href = "../index.html";
+        return;
+    }
+
     usernameBtn.textContent = username;
     logoutBtn.style.display = "block";
 
-    let navHtml = `
+    navMenu.innerHTML = `
         <a href="vehiculos.html">Vehículos</a>
         <a href="repuestos.html">Repuestos</a>
         <a href="presupuestos.html">Presupuestos</a>
+        <a href="usuarios.html">Usuarios</a>
+        <a href="logs.html">Auditoría</a>
     `;
-    if (esAdmin) {
-        navHtml += `<a href="usuarios.html">Usuarios</a>`;
-        navHtml += `<a href="logs.html">Auditoría</a>`;
-    }
-    navMenu.innerHTML = navHtml;
 
     usernameBtn.addEventListener("click", () => {
         dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
@@ -57,11 +61,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    function truncar(texto) {
+        if (!texto) return "";
+        return texto.length > 25 ? texto.substring(0, 25) + "…" : texto;
+    }
+
     const cargarUsuarios = (filtro = "") => {
         let url = `/usuarios?page=${paginaActual}&size=${tamañoPagina}`;
-        if (filtro) {
-            url = `/usuarios/search?keyword=${encodeURIComponent(filtro)}&page=${paginaActual}&size=${tamañoPagina}`;
-        }
+        if (filtro) url = `/usuarios/search?keyword=${encodeURIComponent(filtro)}&page=${paginaActual}&size=${tamañoPagina}`;
 
         $.ajax({
             url,
@@ -76,21 +83,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     tbody.append(`<tr><td colspan="7" class="text-center">No se encontraron usuarios</td></tr>`);
                 } else {
                     usuarios.forEach(u => {
-                        let acciones = "";
-                        if (esAdmin) {
-                            acciones = `
-                                <button class="btn btn-sm btn-warning" onclick="editarUsuario(${u.id})">Editar</button>
-                                <button class="btn btn-sm btn-danger" onclick="borrarUsuario(${u.id})">Borrar</button>
-                            `;
-                        }
+                        let acciones = esAdmin ? `
+                            <button class="btn btn-sm btn-warning" onclick="editarUsuario(${u.id})">Editar</button>
+                            <button class="btn btn-sm btn-danger" onclick="borrarUsuario(${u.id})">Borrar</button>
+                        ` : "";
 
                         tbody.append(`
                             <tr>
                                 <td>${u.id}</td>
-                                <td>${u.username}</td>
-                                <td>${u.firstName || ""}</td>
-                                <td>${u.lastName || ""}</td>
-                                <td>${u.country || ""}</td>
+                                <td title="${u.username}">${truncar(u.username)}</td>
+                                <td title="${u.firstName || ''}">${truncar(u.firstName)}</td>
+                                <td title="${u.lastName || ''}">${truncar(u.lastName)}</td>
+                                <td title="${u.country || ''}">${truncar(u.country)}</td>
                                 <td>${u.role}</td>
                                 <td>${acciones}</td>
                             </tr>
@@ -103,7 +107,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 $("#prevBtn").prop("disabled", data.first);
                 $("#nextBtn").prop("disabled", data.last);
             },
-            error: () => alert("Error al cargar usuarios")
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || "Error al cargar usuarios");
+            }
         });
     };
 

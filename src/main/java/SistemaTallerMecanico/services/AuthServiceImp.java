@@ -38,6 +38,11 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public AuthResponse register(RegisterRequest registerRequest) {
+
+        if (userService.findByUsername(registerRequest.getUsername()).isPresent()) {
+            throw new RuntimeException("El username ya está en uso");
+        }
+
         User user = User.builder()
                 .username(registerRequest.getUsername())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))

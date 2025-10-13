@@ -1,13 +1,16 @@
-body {
+html, body {
+    height: 100%;
     margin: 0;
-    font-family: Arial, sans-serif;
-    color: #2f3640;
-    background: url("../images/fondo.jpg") no-repeat center center fixed;
-    background-size: cover;
+}
 
+body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    color: #eaeaea;
+    background: url("../images/fondo.jpg") no-repeat center center fixed;
+    background-size: cover;
 }
 
 main {
@@ -19,16 +22,17 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    background: rgba(44, 44, 44, 0.5);
-    color: white;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    background: rgba(20, 20, 20, 0.8);
+    color: #eaeaea;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    backdrop-filter: blur(6px);
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #fbc531;
     cursor: pointer;
-    transition: opacity 0.2s ease;
 }
 
 .logo:hover {
@@ -37,15 +41,14 @@ header {
 
 nav {
     display: flex;
-    gap: 55px;
+    gap: 70px;
 }
 
 nav a {
-    margin: 0 10px;
-    color: white;
+    color: #ddd;
     text-decoration: none;
-    font-size: 1.5rem;
     font-weight: 500;
+    font-size: 1.5rem;
     transition: 0.2s;
 }
 
@@ -64,6 +67,8 @@ nav a:hover {
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
+    transition: 0.2s;
+    color: #222;
 }
 
 #usernameBtn:hover {
@@ -76,46 +81,75 @@ nav a:hover {
     position: absolute;
     right: 0;
     top: 100%;
-    background: white;
-    border: 1px solid #ddd;
+    background: #222;
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     z-index: 1000;
 }
 
 .dropdown button {
     background: none;
     border: none;
+    color: #f0f0f0;
     padding: 10px 20px;
-    cursor: pointer;
     width: 100%;
     text-align: left;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
 .dropdown button:hover {
-    background: #f0f0f0;
+    background: #333;
+}
+
+.table td.username,
+.table td.firstName,
+.table td.lastName,
+.table td.country {
+    max-width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table td.acciones {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    flex-wrap: wrap;
 }
 
 #searchFiltro {
     max-width: 400px;
 }
 
-.table th, .table td {
-    text-align: center;
-    vertical-align: middle;
+#agregarUsuarioBtn {
+    height: 38px;
+    background: #fbc531;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #222;
+}
+
+#agregarUsuarioBtn:hover {
+    background: #e1a82d;
 }
 
 .footer {
-    background: rgba(44, 44, 44, 0.5);
-    color: white;
-    padding: 10px 20px;
-    font-size: 0.85rem;
+    background: rgba(20, 20, 20, 0.8);
+    color: #eaeaea;
+    padding: 15px 20px;
+    font-size: 0.9rem;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 30px;
     align-items: center;
-    line-height: 1.2;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(6px);
 }
 
 .footer-item {
@@ -132,7 +166,7 @@ nav a:hover {
 .footer-btn {
     background: none;
     border: none;
-    color: white;
+    color: #eaeaea;
     cursor: pointer;
     font-size: 0.85rem;
     padding: 0;
@@ -145,6 +179,7 @@ nav a:hover {
 }
 
 .footer i {
+    color: #fbc531;
     font-size: 1.1rem;
     line-height: 1;
 }
@@ -177,19 +212,11 @@ nav a:hover {
     .footer-item {
         margin-right: 0;
     }
-
 }
 
 @media (max-width: 480px) {
     .logo {
         font-size: 1.2rem;
-        font-weight: bold;
-        cursor: pointer;
-        transition: opacity 0.2s ease;
-    }
-
-    .logo:hover {
-        opacity: 0.8;
     }
 
     nav {
@@ -214,5 +241,4 @@ nav a:hover {
     .footer-btn {
         font-size: 0.8rem;
     }
-
 }

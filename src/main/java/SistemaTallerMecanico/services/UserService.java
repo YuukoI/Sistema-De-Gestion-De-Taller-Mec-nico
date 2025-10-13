@@ -21,6 +21,8 @@ public interface UserService {
 
     Page<User> findAllPaged(Pageable pageable);
 
-    Page<User> findByUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String keyword, Pageable pageable);
+    public Page<User> searchByUsernameOrRole(String keyword, Pageable pageable);
+
+    public boolean existsByUsername(String username);
 
 }

@@ -29,7 +29,7 @@ public class JwtServiceImp implements JwtService {
     private String getToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         String rol = userDetails.getAuthorities().stream()
                 .findFirst()
-                .map(GrantedAuthority::getAuthority) // devuelve "ROLE_ADMIN" o "ROLE_USER"
+                .map(GrantedAuthority::getAuthority)
                 .orElse("ROLE_USER");
 
         if (rol.startsWith("ROLE_")) {

@@ -1,7 +1,6 @@
 package SistemaTallerMecanico.controllers;
 
 import SistemaTallerMecanico.entities.Log;
-import SistemaTallerMecanico.repositories.LogRepository;
 import SistemaTallerMecanico.services.LogService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +21,9 @@ public class LogController {
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public Page<Log> getLogs(@RequestParam(defaultValue = "0") int page,
-                             @RequestParam(defaultValue = "15") int size) {
+                             @RequestParam(defaultValue = "15") int size,
+                             @RequestParam(defaultValue = "id") String sortBy )
+    {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         return logService.findAll(pageable);
     }

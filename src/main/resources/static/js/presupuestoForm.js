@@ -6,40 +6,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function parseJwt(token) {
         try {
-            const payload = token.split('.')[1];
-            return JSON.parse(atob(payload));
-        } catch (e) {
+            return JSON.parse(atob(token.split('.')[1]));
+        } catch {
             return null;
         }
     }
 
     const token = localStorage.getItem("jwt");
-    let username = null;
-    let esAdmin = false;
-
-    if (token) {
-        const decoded = parseJwt(token);
-        username = decoded?.sub || decoded?.username || "Usuario";
-        esAdmin = decoded?.rol === "ADMIN";
-
-        usernameBtn.textContent = username;
-        logoutBtn.style.display = "block";
-
-        let navHtml = `
-            <a href="vehiculos.html">Vehículos</a>
-            <a href="repuestos.html">Repuestos</a>
-            <a href="presupuestos.html">Presupuestos</a>
-        `;
-        if (esAdmin) {
-            navHtml += `<a href="usuarios.html">Usuarios</a>`;
-            navHtml += `<a href="logs.html">Auditoría</a>`;
-        }
-        navMenu.innerHTML = navHtml;
-    } else {
+    if (!token) {
         alert("Debes iniciar sesión");
         window.location.href = "../index.html";
         return;
     }
+
+    const decoded = parseJwt(token);
+    const username = decoded?.sub || decoded?.username || "Usuario";
+    const esAdmin = decoded?.rol === "ADMIN";
+
+    if (!esAdmin) {
+        alert("No tienes permisos para acceder a esta página");
+        window.location.href = "../index.html";
+        return;
+    }
+
+    usernameBtn.textContent = username;
+    logoutBtn.style.display = "block";
+
+    navMenu.innerHTML = `
+        <a href="vehiculos.html">Vehículos</a>
+        <a href="repuestos.html">Repuestos</a>
+        <a href="presupuestos.html">Presupuestos</a>
+        <a href="usuarios.html">Usuarios</a>
+        <a href="logs.html">Auditoría</a>
+    `;
 
     usernameBtn.addEventListener("click", () => {
         dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
@@ -47,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("jwt");
-        window.location.reload();
+        window.location.href = "../index.html";
     });
 
     document.addEventListener("click", (e) => {
@@ -121,7 +120,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const logo = document.querySelector(".logo");
-    logo.addEventListener("click", () => {
-        window.location.href = "../index.html";
-    });
+    logo.addEventListener("click", () => window.location.href = "../index.html");
 });

@@ -29,7 +29,7 @@ public class pdfServiceImp implements pdfService {
             document.add(new Paragraph("\n"));
 
             try {
-                Image logo = Image.getInstance("src/main/resources/static/images/logo.jpg");
+                Image logo = Image.getInstance("");
                 logo.scaleToFit(250, 250);
                 logo.setAlignment(Element.ALIGN_CENTER);
                 document.add(logo);

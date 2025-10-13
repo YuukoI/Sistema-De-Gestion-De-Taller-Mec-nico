@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const cancelBtn = document.getElementById("cancelBtn");
 
     const token = localStorage.getItem("jwt");
-
     if (!token) {
         alert("Debes iniciar sesión");
         window.location.href = "../index.html";
@@ -17,30 +16,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function parseJwt(token) {
         try {
-            const payload = token.split(".")[1];
-            return JSON.parse(atob(payload));
-        } catch (e) {
+            return JSON.parse(atob(token.split(".")[1]));
+        } catch {
             return null;
         }
     }
 
     const decoded = parseJwt(token);
     const username = decoded?.sub || decoded?.username || "Usuario";
-    const role = decoded?.role || decoded?.rol || decoded?.roles?.[0] || "USER";
+    const esAdmin = decoded?.rol === "ADMIN";
+
+    if (!esAdmin) {
+        alert("No tienes permisos para acceder a esta página");
+        window.location.href = "../index.html";
+        return;
+    }
 
     usernameBtn.textContent = username;
     logoutBtn.style.display = "block";
 
-    let navHtml = `
+    navMenu.innerHTML = `
         <a href="vehiculos.html">Vehículos</a>
         <a href="repuestos.html">Repuestos</a>
         <a href="presupuestos.html">Presupuestos</a>
+        <a href="usuarios.html">Usuarios</a>
+        <a href="logs.html">Auditoría</a>
     `;
-    if (role === "ADMIN") {
-        navHtml += `<a href="usuarios.html">Usuarios</a>`;
-        navHtml += `<a href="logs.html">Auditoría</a>`;
-    }
-    navMenu.innerHTML = navHtml;
 
     usernameBtn.addEventListener("click", () => {
         dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("jwt");
-        window.location.href = "formLogin.html";
+        window.location.href = "../index.html";
     });
 
     document.querySelector(".logo")?.addEventListener("click", () => {
@@ -89,8 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const repuestoData = {
             nombre: document.getElementById("nombre").value.trim(),
             descripcion: document.getElementById("descripcion").value.trim(),
-            stock: parseInt(document.getElementById("stock").value),
-            precio: parseFloat(document.getElementById("precio").value)
+            stock: parseInt(document.getElementById("stock").value) || 0,
+            precio: parseFloat(document.getElementById("precio").value) || 0
         };
 
         const method = repuestoId ? "PUT" : "POST";
@@ -108,9 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!res.ok) throw new Error("Error al guardar el repuesto");
                 return res.json();
             })
-            .then(() => {
-                window.location.href = "repuestos.html";
-            })
+            .then(() => window.location.href = "repuestos.html")
             .catch(err => alert(err.message));
     });
 

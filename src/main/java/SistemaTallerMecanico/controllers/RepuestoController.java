@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/repuestos")
@@ -25,7 +26,7 @@ public class RepuestoController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Page<Repuesto>> findAllPaged(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "15") int size,
             @RequestParam(defaultValue = "id") String sortBy )
     {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
@@ -98,7 +99,7 @@ public class RepuestoController {
     public ResponseEntity<Page<Repuesto>> search(
             @RequestParam(required = false) String nombre,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size )
+            @RequestParam(defaultValue = "15") int size )
     {
         Pageable pageable = PageRequest.of(page, size);
         if (nombre != null && !nombre.isEmpty()) {

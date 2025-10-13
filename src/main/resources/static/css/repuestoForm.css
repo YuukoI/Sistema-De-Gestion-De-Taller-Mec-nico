@@ -1,18 +1,28 @@
-body {
-    font-family: Arial, sans-serif;
+html, body {
+    height: 100%;
     margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
     color: #2f3640;
-    padding: 0;
     background: url("../images/fondo.jpg") no-repeat center center fixed;
     background-size: cover;
 }
 
+main {
+    flex: 1;
+}
+
 .form-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     margin: 50px auto;
     background-color: #fff;
-    padding: 20px;
+    padding: 25px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -20,7 +30,7 @@ body {
 #formTitle {
     text-align: center;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .form-group {
@@ -32,7 +42,7 @@ body {
     color: #555;
 }
 
-.form-control {
+.form-control, select, textarea {
     border-radius: 5px;
     border: 1px solid #ccc;
     padding: 10px;
@@ -44,6 +54,7 @@ body {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+    margin-top: 15px;
 }
 
 .btn {
@@ -79,33 +90,41 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    background: rgba(44, 44, 44, 0.5);
+    background: rgba(20, 20, 20, 0.8);
     color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    backdrop-filter: blur(6px);
 }
 
-header .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
+.logo {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #fbc531;
+    cursor: pointer;
 }
 
 nav {
     display: flex;
-    gap: 55px;
+    gap: 70px;
 }
 
-header nav a {
-    margin: 0 10px;
-    color: white;
+nav a {
+    color: #ddd;
     text-decoration: none;
-    font-size: 1.5rem;
+    transition: 0.2s;
     font-weight: 500;
+    font-size: 1.5rem;
+}
+
+nav a:hover {
+    color: #fbc531;
 }
 
 header .user {
     position: relative;
 }
 
-header #usernameBtn {
+#usernameBtn {
     background-color: #fbc531;
     border: none;
     padding: 8px 15px;
@@ -113,11 +132,11 @@ header #usernameBtn {
     cursor: pointer;
 }
 
-header #usernameBtn:hover {
+#usernameBtn:hover {
     background-color: #e1a82d;
 }
 
-header #userDropdown {
+#userDropdown {
     display: none;
     position: absolute;
     top: 40px;
@@ -129,7 +148,7 @@ header #userDropdown {
     z-index: 100;
 }
 
-header #userDropdown button {
+#userDropdown button {
     background: none;
     border: none;
     padding: 10px 20px;
@@ -138,17 +157,93 @@ header #userDropdown button {
     text-align: left;
 }
 
-header #userDropdown button:hover {
+#userDropdown button:hover {
     background-color: #f0f0f0;
 }
 
-.logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
+footer {
+    background: rgba(20, 20, 20, 0.8);
+    color: white;
+    padding: 15px 20px;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(6px);
 }
 
-.logo:hover {
-    opacity: 0.8;
+.footer-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 350px;
+}
+
+.footer i {
+    color: #fbc531;
+}
+
+.footer-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.footer-item:last-child {
+    margin-right: 0;
+}
+
+.footer-btn:hover {
+    color: #fbc531;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .form-container {
+        margin: 30px 20px;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    nav a {
+        padding: 8px 0;
+    }
+
+    #usernameBtn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    .form-container {
+        margin: 20px 15px;
+        padding: 15px;
+    }
 }

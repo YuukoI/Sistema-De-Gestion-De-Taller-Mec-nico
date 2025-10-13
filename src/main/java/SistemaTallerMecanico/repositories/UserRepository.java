@@ -1,5 +1,6 @@
 package SistemaTallerMecanico.repositories;
 
+import SistemaTallerMecanico.entities.Role;
 import SistemaTallerMecanico.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     Page<User> findAll(Pageable pageable);
 
-    Page<User> findByUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
-            String username, String firstName, String lastName, Pageable pageable);
+    Page<User> findByUsernameContainingIgnoreCaseOrRole(String username, Role role, Pageable pageable);
 
+    boolean existsByUsername(String username);
 }

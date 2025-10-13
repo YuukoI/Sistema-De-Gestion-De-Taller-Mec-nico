@@ -61,6 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("agregarPresupuestoBtn").style.display = "none";
     }
 
+    const formatoMoneda = (valor) => {
+        if (valor == null) return "";
+        return valor.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+    };
+
     const cargarPresupuestos = (filtro = "") => {
         let url = `/presupuestos?page=${paginaActual}&size=${tamañoPagina}`;
         if (filtro) {
@@ -82,6 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     presupuestos.forEach(p => {
                         const fecha = p.fecha ? new Date(p.fecha + "T00:00:00").toLocaleDateString() : "";
                         const descripcion = p.descripcion || (p.repuestos ? p.repuestos.join(", ") + (p.manoDeObra ? " + Mano de obra" : "") : "");
+                        const descripcionCorta = descripcion.length > 100 ? descripcion.substring(0, 100) + '...' : descripcion;
 
                         let acciones = "";
                         if (userRole === "ADMIN") {
@@ -89,22 +95,26 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <button class="btn btn-sm btn-warning" onclick="editarPresupuesto(${p.id})">Editar</button>
                                 <button class="btn btn-sm btn-danger" onclick="borrarPresupuesto(${p.id})">Borrar</button>
                             `;
+                        } else {
+                            acciones = "-";
                         }
 
                         tbody.append(`
                             <tr>
                                 <td>${p.id}</td>
-                                <td>${p.patente}</td>
-                                <td>${p.nombrePropietario}</td>
-                                <td>${descripcion}</td>
-                                <td>${p.total || ""}</td>
+                                <td class="patente" title="${p.patente}">${p.patente}</td>
+                                <td class="nombrePropietario" title="${p.nombrePropietario}">${p.nombrePropietario}</td>
+                                <td class="descripcion" onclick="mostrarDescripcion('${descripcion.replace(/'/g, "\\'")}')" title="Haz clic para ver completa">
+                                    ${descripcionCorta}
+                                </td>
+                                <td>${formatoMoneda(p.total)}</td>
                                 <td>${fecha}</td>
-                                <td>${acciones}</td>
                                 <td>
                                     <button class="btn btn-sm btn-secondary" onclick="verPdf(${p.id})">
                                         <i class="bi bi-file-earmark-pdf"></i>
                                     </button>
                                 </td>
+                                <td class="acciones">${acciones}</td>
                             </tr>
                         `);
                     });
@@ -173,11 +183,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cargarPresupuestos();
 
-    const logo = document.querySelector(".logo");
-    logo.addEventListener("click", () => {
+    document.querySelector(".logo").addEventListener("click", () => {
         window.location.href = "../index.html";
     });
 });
+
+function mostrarDescripcion(texto) {
+    document.getElementById('descText').textContent = texto;
+    document.getElementById('descModal').style.display = 'flex';
+}
+
+function cerrarModal() {
+    document.getElementById('descModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('descModal');
+    if (event.target === modal) {
+        cerrarModal();
+    }
+};
 
 window.verPdf = async (id) => {
     const token = localStorage.getItem("jwt");
@@ -197,16 +222,19 @@ window.verPdf = async (id) => {
 
         const contenedor = document.createElement("div");
         contenedor.innerHTML = `
-            <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:9999;">
-                <div style="background:#fff; padding:20px; width:80%; height:90%; position:relative;">
-                    <button id="cerrarPdf" style="position:absolute; top:10px; right:10px;" class="btn btn-danger">Cerrar</button>
-                    <iframe src="${url}" style="width:100%; height:85%; border:none;"></iframe>
-                    <div style="text-align:center; margin-top:10px;">
-                        <a href="${url}" download="presupuesto_${id}.pdf" class="btn btn-success">Descargar PDF</a>
-                    </div>
-                </div>
+    <div style="position:fixed; top:0; left:0; width:100%; height:100%; 
+                background:rgba(0,0,0,0.7); display:flex; align-items:center; 
+                justify-content:center; z-index:9999; overflow:auto;">
+        <div style="background:#fff; padding:10px; width:90%; height:95%; 
+                    max-height:95vh; position:relative; display:flex; flex-direction:column;">
+            <button id="cerrarPdf" style="position:absolute; top:10px; right:10px;" class="btn btn-danger">Cerrar</button>
+            <iframe src="${url}" style="flex:1; width:100%; border:none;"></iframe>
+            <div style="text-align:center; margin-top:5px;">
+                <a href="${url}" download="presupuesto_${id}.pdf" class="btn btn-success">Descargar PDF</a>
             </div>
-        `;
+        </div>
+    </div>
+`;
 
         document.body.appendChild(contenedor);
 

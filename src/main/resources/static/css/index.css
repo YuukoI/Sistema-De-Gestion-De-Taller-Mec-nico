@@ -7,8 +7,8 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    font-family: Arial, sans-serif;
-    color: #2f3640;
+    font-family: 'Segoe UI', sans-serif;
+    color: #eaeaea;
     background: url("../images/fondo.jpg") no-repeat center center fixed;
     background-size: cover;
 }
@@ -18,34 +18,30 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    background: rgba(44, 44, 44, 0.5);
+    background: rgba(20, 20, 20, 0.8);
     color: white;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    backdrop-filter: blur(6px);
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #fbc531;
     cursor: pointer;
-    transition: opacity 0.2s ease;
-}
-
-.logo:hover {
-    opacity: 0.8;
 }
 
 nav {
     display: flex;
-    gap: 80px;
+    gap: 70px;
 }
 
 nav a {
-    margin: 0 10px;
-    color: white;
+    color: #ddd;
     text-decoration: none;
-    font-weight: 500;
-    font-size:1.5rem;
     transition: 0.2s;
+    font-weight: 500;
+    font-size: 1.5rem;
 }
 
 nav a:hover {
@@ -64,6 +60,7 @@ nav a:hover {
     cursor: pointer;
     font-weight: bold;
     transition: 0.2s;
+    color: #222;
 }
 
 #usernameBtn:hover {
@@ -72,53 +69,132 @@ nav a:hover {
 
 .dropdown {
     display: none;
-    flex-direction: column;
     position: absolute;
     right: 0;
     top: 100%;
-    background: white;
-    border: 1px solid #ddd;
+    background: #222;
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    left: auto;
-    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    overflow: hidden;
 }
 
 .dropdown button {
     background: none;
     border: none;
+    color: #f0f0f0;
     padding: 10px 20px;
-    cursor: pointer;
     width: 100%;
     text-align: left;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
 .dropdown button:hover {
-    background: #f0f0f0;
+    background: #333;
 }
 
 main {
     flex: 1;
-    padding: 40px;
-    text-align: center;
-    background: rgba(255,255,255,0.85);
+    padding: 50px;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 90%;
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    background: rgba(15, 15, 15, 0.7);
+    border-radius: 20px;
+    padding: 60px;
+    width: 100%;
+    max-width: none;
+    margin: 0 auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.dashboard-row.top {
+    display: flex;
+    justify-content: space-between;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.chart-box canvas {
+    height: 385px !important;
+    width: 100% !important;
+}
+
+.card {
+    background: rgba(45, 45, 45, 0.95);
+    color: #fff;
     border-radius: 12px;
-    margin: 50px auto;
-    max-width: 900px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    padding: 25px;
+    text-align: center;
+    flex: 1;
+    min-width: 220px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease, background 0.3s, color 0.3s;
+}
+
+.card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #fbc531;
+}
+
+.card p {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    transition: color 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    background: rgba(240, 240, 240, 0.9);
+}
+
+.card:hover p {
+    color: #111;
+}
+
+.dashboard-row.charts {
+    display: flex;
+    justify-content: space-between;
+    gap: 35px;
+    flex-wrap: wrap;
+    margin-top: 150px;
+}
+
+.chart-box {
+    background: rgba(30,30,30,0.85);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    flex: 1;
+    min-width: 450px;
+}
+
+.chart-box h2 {
+    color: #fbc531;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .footer {
-    background: rgba(44, 44, 44, 0.5);
+    background: rgba(20, 20, 20, 0.8);
     color: white;
-    padding: 10px 20px;
-    font-size: 0.85rem;
+    padding: 15px 20px;
+    font-size: 0.9rem;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 30px;
     align-items: center;
-    line-height: 1.2;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(6px);
 }
 
 .footer-item {
@@ -127,13 +203,9 @@ main {
     gap: 6px;
     margin-right: 350px;
 }
-.footer-item:last-child {
-    margin-right: 0;
-}
 
 .footer i {
-    font-size: 1.1rem;
-    line-height: 1;
+    color: #fbc531;
 }
 
 .footer-btn {
@@ -141,9 +213,11 @@ main {
     border: none;
     color: white;
     cursor: pointer;
-    font-size: 0.85rem;
-    padding: 0;
-    text-align: left;
+    transition: 0.2s;
+}
+
+.footer-item:last-child {
+    margin-right: 0;
 }
 
 .footer-btn:hover {
@@ -151,74 +225,13 @@ main {
     text-decoration: underline;
 }
 
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px 20px;
-    }
-
-    nav {
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
+@media (max-width: 992px) {
     main {
-        margin: 20px;
-        padding: 20px;
+        padding: 30px;
     }
 
-    .footer {
+    .dashboard-row.top,
+    .dashboard-row.charts {
         flex-direction: column;
-        text-align: center;
-        padding: 10px 15px;
-        gap: 8px;
-    }
-
-    .footer-item {
-        margin: 4px 0;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo {
-        font-size: 1.2rem;
-        font-weight: bold;
-        cursor: pointer;
-        transition: opacity 0.2s ease;
-    }
-
-    .logo:hover {
-        opacity: 0.8;
-    }
-
-    nav {
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-    }
-
-    nav a {
-        padding: 8px 0;
-    }
-
-    #usernameBtn {
-        padding: 6px 12px;
-        font-size: 0.9rem;
-    }
-
-    main {
-        margin: 15px;
-        padding: 15px;
-        font-size: 0.9rem;
-    }
-
-    .footer-item i {
-        font-size: 0.9rem;
-    }
-
-    .footer-btn {
-        font-size: 0.8rem;
     }
 }
