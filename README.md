@@ -15,6 +15,8 @@ Eficiencia Operativa: Reducción de errores manuales mediante validaciones de da
 
 Backend: Java & Spring Boot (MVC / API REST).
 
+Frontend: HTML5, CSS3 y Bootstrap.
+
 Seguridad: Spring Security.
 
 Persistencia: Spring Data JPA / Hibernate + MySQL.
